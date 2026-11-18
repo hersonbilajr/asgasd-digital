@@ -186,9 +186,11 @@ O contentor corre como utilizador não-root e expõe `PORT` (predefinido 8080).
 ### Render (Blueprint)
 `render.yaml` descreve o serviço web (Docker) e uma base PostgreSQL. O Render injeta `DATABASE_URL` como URI `postgres://…` (`fromDatabase: connectionString`) e a aplicação converte-a para JDBC no arranque — não é preciso montar a URL à mão.
 
-1. No Render: **New → Blueprint** e escolha o repositório `hersonbilajr/asgasd-digital`.
-2. Preencha `APP_BASE_URL` com o URL do serviço (ex. `https://asgasd-digital.onrender.com`).
+1. Abra `https://render.com/deploy?repo=https://github.com/hersonbilajr/asgasd-digital` (ou **New → Blueprint** e escolha o repositório) e confirme **Apply**.
+2. `APP_BASE_URL` já vem definido como `https://asgasd-digital.onrender.com`; se o Render atribuir outro subdomínio, actualize a variável em **Environment**.
 3. `ADMIN_PASSWORD` e `CLIENTE_PASSWORD` são gerados automaticamente; veja-os em **Environment** e altere-os depois do primeiro login.
+
+> O plano `free` do Render não pede cartão, mas a base de dados gratuita expira 30 dias após a criação (o serviço web gratuito adormece após 15 minutos sem tráfego e demora ~1 minuto a acordar). Para manter os dados indefinidamente, mude a base para `0.1c-256mb` (6 USD/mês) antes do fim desse prazo — o conteúdo é preservado — ou use o Neon abaixo. O PostgreSQL é fixado na versão 16 porque o Flyway do Spring Boot 3.3 ainda não reconhece a 18.
 
 ### Neon (PostgreSQL gratuito) + qualquer host de contentores
 1. Crie um projeto no Neon e copie a connection string (`postgresql://…?sslmode=require`).

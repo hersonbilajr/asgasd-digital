@@ -13,8 +13,9 @@ services:
         fromDatabase:
           name: asgasd-db
           property: connectionString
+      # URL publica do servico. Se o Render atribuir outro subdominio, actualizar em Environment.
       - key: APP_BASE_URL
-        sync: false
+        value: https://asgasd-digital.onrender.com
       - key: SEED_DEMO
         value: "true"
       - key: ADMIN_EMAIL
@@ -28,4 +29,7 @@ databases:
   - name: asgasd-db
     databaseName: asgasd
     user: asgasd
-    plan: basic-256mb
+    # Plano gratuito: sem cartao, mas a instancia expira 30 dias apos a criacao.
+    plan: free
+    # Flyway 10 (Spring Boot 3.3.x) ainda nao suporta PostgreSQL 18; fixar a versao 16.
+    postgresMajorVersion: '16'

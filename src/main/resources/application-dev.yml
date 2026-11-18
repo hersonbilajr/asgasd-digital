@@ -1,0 +1,13 @@
+spring:
+  thymeleaf:
+    cache: false
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+logging:
+  level:
+    com.asgasd.digital: DEBUG
+    org.springframework.security: INFO

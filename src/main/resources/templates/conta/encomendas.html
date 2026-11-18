@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('As minhas encomendas')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/conta}">A minha conta</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Encomendas</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <h1 class="h3 mb-0">As minhas encomendas</h1>
+            <a class="btn btn-contorno" th:href="@{/consulta}"><i class="bi bi-search me-1"></i>Consultar por referencia</a>
+        </div>
+
+        <div class="vazio-estado" th:if="${#lists.isEmpty(encomendas)}">
+            <i class="bi bi-box"></i>
+            <h2 class="h5">Ainda nao tem encomendas</h2>
+            <p class="mb-3">Quando finalizar uma compra, ela aparece aqui com o estado actualizado.</p>
+            <a class="btn btn-azul" th:href="@{/produtos}">Ver catalogo</a>
+        </div>
+
+        <div class="cartao-admin" th:if="${!#lists.isEmpty(encomendas)}">
+            <div class="table-responsive">
+                <table class="table tabela-admin align-middle">
+                    <thead>
+                    <tr>
+                        <th>Referencia</th>
+                        <th>Data</th>
+                        <th>Estado</th>
+                        <th>Pagamento</th>
+                        <th class="text-end">Total</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="e : ${encomendas}">
+                        <td class="fw-semibold" th:text="${e.referencia}">ASG</td>
+                        <td th:text="${#temporals.format(e.criadoEm, 'dd/MM/yyyy HH:mm')}">Data</td>
+                        <td>
+                            <span class="badge-estado"
+                                  th:classappend="'text-bg-' + ${e.status.corBootstrap}"
+                                  th:text="${e.status.descricao}">Estado</span>
+                        </td>
+                        <td>
+                            <span class="badge-estado"
+                                  th:classappend="'text-bg-' + ${e.pagamento != null ? e.pagamento.status.corBootstrap : 'secondary'}"
+                                  th:text="${e.pagamento != null ? e.pagamento.status.descricao : 'Sem pagamento'}">Pagamento</span>
+                        </td>
+                        <td class="text-end" th:text="${@moeda.mt(e.total)}">0,00 MT</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-contorno" th:href="@{/conta/encomendas/{id}(id=${e.id})}">
+                                Detalhes
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

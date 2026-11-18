@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('Catalogo')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Catalogo</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+            <div>
+                <h1 class="h3 mb-1">Catalogo de produtos</h1>
+                <p class="texto-suave mb-0">
+                    <span th:text="${totalProdutos}">0</span> produto(s) encontrado(s)
+                    <span th:if="${filtro.termo}">para &ldquo;<strong th:text="${filtro.termo}"></strong>&rdquo;</span>
+                </p>
+            </div>
+            <form method="get" th:action="@{/produtos}" class="d-flex align-items-center gap-2">
+                <input type="hidden" name="termo" th:value="${filtro.termo}">
+                <input type="hidden" name="categoriaId" th:value="${filtro.categoriaId}">
+                <label class="form-label mb-0 small texto-suave" for="ordenar">Ordenar por</label>
+                <select class="form-select form-select-sm" id="ordenar" name="ordenar" onchange="this.form.submit()"
+                        style="min-width: 190px">
+                    <option value="relevancia" th:selected="${filtro.ordenar == 'relevancia'}">Relevancia</option>
+                    <option value="preco-asc" th:selected="${filtro.ordenar == 'preco-asc'}">Preco: menor primeiro</option>
+                    <option value="preco-desc" th:selected="${filtro.ordenar == 'preco-desc'}">Preco: maior primeiro</option>
+                    <option value="nome" th:selected="${filtro.ordenar == 'nome'}">Nome (A-Z)</option>
+                    <option value="novidade" th:selected="${filtro.ordenar == 'novidade'}">Novidades</option>
+                </select>
+                <noscript><button class="btn btn-sm btn-azul" type="submit">Aplicar</button></noscript>
+            </form>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <form class="filtros" method="get" th:action="@{/produtos}">
+                    <div class="filtro-grupo">
+                        <h6>Pesquisar</h6>
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="termo" placeholder="Nome do produto"
+                                   th:value="${filtro.termo}">
+                            <button class="btn btn-azul" type="submit" aria-label="Pesquisar">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filtro-grupo">
+                        <h6>Categorias</h6>
+                        <a class="categoria-link" th:href="@{/produtos(termo=${filtro.termo})}"
+                           th:classappend="${filtro.categoriaId == null} ? 'ativo'">
+                            <span>Todas as categorias</span>
+                        </a>
+                        <a class="categoria-link" th:each="categoria : ${categoriasFiltro}"
+                           th:href="@{/produtos(termo=${filtro.termo}, categoriaId=${categoria.id})}"
+                           th:classappend="${filtro.categoriaId == categoria.id} ? 'ativo'">
+                            <span th:text="${categoria.nome}">Categoria</span>
+                        </a>
+                    </div>
+
+                    <div class="filtro-grupo">
+                        <h6>Preco (MT)</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input class="form-control form-control-sm" type="number" min="0" step="100"
+                                       name="precoMin" placeholder="Minimo" th:value="${filtro.precoMin}">
+                            </div>
+                            <div class="col-6">
+                                <input class="form-control form-control-sm" type="number" min="0" step="100"
+                                       name="precoMax" placeholder="Maximo" th:value="${filtro.precoMax}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filtro-grupo">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="apenasDisponiveis"
+                                   id="apenasDisponiveis" value="true" th:checked="${filtro.apenasDisponiveis}">
+                            <label class="form-check-label small" for="apenasDisponiveis">Apenas com stock</label>
+                        </div>
+                        <input type="hidden" name="ordenar" th:value="${filtro.ordenar}">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-azul" type="submit">
+                            <i class="bi bi-funnel me-1"></i>Aplicar filtros
+                        </button>
+                        <a class="btn btn-contorno btn-sm" th:href="@{/produtos}">Limpar</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-lg-9">
+                <div class="row g-4" th:if="${!pagina.empty}">
+                    <div class="col-sm-6 col-xl-4" th:each="produto : ${pagina.content}">
+                        <div th:replace="~{fragments/card :: card(${produto})}"></div>
+                    </div>
+                </div>
+
+                <div class="vazio-estado" th:if="${pagina.empty}">
+                    <i class="bi bi-search"></i>
+                    <h2 class="h5">Nenhum produto encontrado</h2>
+                    <p class="mb-3">Tente outra palavra, remova filtros ou veja todas as categorias.</p>
+                    <a class="btn btn-azul" th:href="@{/produtos}">Ver todo o catalogo</a>
+                </div>
+
+                <nav class="mt-4" th:if="${totalPaginas > 1}" aria-label="Navegacao do catalogo">
+                    <ul class="pagination paginacao justify-content-center">
+                        <li class="page-item" th:classappend="${paginaAtual == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/produtos(pagina=${paginaAtual - 1}, termo=${filtro.termo}, categoriaId=${filtro.categoriaId}, precoMin=${filtro.precoMin}, precoMax=${filtro.precoMax}, ordenar=${filtro.ordenar}, apenasDisponiveis=${filtro.apenasDisponiveis})}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPaginas - 1)}"
+                            th:classappend="${i == paginaAtual} ? 'active'">
+                            <a class="page-link" th:text="${i + 1}"
+                               th:href="@{/produtos(pagina=${i}, termo=${filtro.termo}, categoriaId=${filtro.categoriaId}, precoMin=${filtro.precoMin}, precoMax=${filtro.precoMax}, ordenar=${filtro.ordenar}, apenasDisponiveis=${filtro.apenasDisponiveis})}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${paginaAtual + 1 >= totalPaginas} ? 'disabled'">
+                            <a class="page-link" th:href="@{/produtos(pagina=${paginaAtual + 1}, termo=${filtro.termo}, categoriaId=${filtro.categoriaId}, precoMin=${filtro.precoMin}, precoMax=${filtro.precoMax}, ordenar=${filtro.ordenar}, apenasDisponiveis=${filtro.apenasDisponiveis})}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<button th:replace="~{fragments/layout :: topo}"></button>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

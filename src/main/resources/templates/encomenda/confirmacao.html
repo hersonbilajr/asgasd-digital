@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('Encomenda confirmada')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="cartao-admin text-center mb-4">
+                    <div class="display-5 texto-acento mb-2"><i class="bi bi-check-circle-fill"></i></div>
+                    <h1 class="h3">Encomenda registada com sucesso</h1>
+                    <p class="texto-suave mb-2">Guarde o numero de referencia para acompanhar a encomenda.</p>
+                    <div class="d-inline-block px-4 py-2 rounded-3" style="background:#f2f7fd">
+                        <span class="texto-suave small d-block">Referencia</span>
+                        <strong class="fs-4" th:text="${encomenda.referencia}">ASG-00000000-000000</strong>
+                    </div>
+                    <p class="mt-3 mb-0">
+                        <span class="badge-estado"
+                              th:classappend="'text-bg-' + ${encomenda.status.corBootstrap}"
+                              th:text="${encomenda.status.descricao}">Pendente</span>
+                        <span class="texto-suave small ms-2"
+                              th:text="|Registada em ${#temporals.format(encomenda.criadoEm, 'dd/MM/yyyy HH:mm')}|">Data</span>
+                    </p>
+                </div>
+
+                <div class="cartao-admin mb-4">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Produtos</h2>
+                    <div class="table-responsive">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th class="text-center">Quantidade</th>
+                                <th class="text-end">Preco</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${encomenda.itens}">
+                                <td th:text="${item.nomeProduto}">Produto</td>
+                                <td class="text-center" th:text="${item.quantidade}">1</td>
+                                <td class="text-end" th:text="${@moeda.mt(item.precoUnitario)}">0,00 MT</td>
+                                <td class="text-end" th:text="${@moeda.mt(item.subtotal)}">0,00 MT</td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end">Subtotal</td>
+                                <td class="text-end" th:text="${@moeda.mt(encomenda.subtotal)}">0,00 MT</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end">Envio</td>
+                                <td class="text-end"
+                                    th:text="${encomenda.custoEnvio.signum() == 0} ? 'Gratis' : ${@moeda.mt(encomenda.custoEnvio)}">0,00 MT</td>
+                            </tr>
+                            <tr class="fw-bold">
+                                <td colspan="3" class="text-end">Total</td>
+                                <td class="text-end" th:text="${@moeda.mt(encomenda.total)}">0,00 MT</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="cartao-admin h-100">
+                            <h2 class="h6 text-uppercase texto-suave mb-3">Entrega</h2>
+                            <p class="fw-semibold mb-1" th:text="${encomenda.nomeContacto}">Nome</p>
+                            <p class="small mb-1" th:text="${encomenda.telefoneContacto}">Telefone</p>
+                            <p class="small mb-1" th:text="${encomenda.emailContacto}">Email</p>
+                            <p class="small texto-suave mb-0" th:text="${encomenda.enderecoEntrega}">Endereco</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="cartao-admin h-100">
+                            <h2 class="h6 text-uppercase texto-suave mb-3">Pagamento</h2>
+                            <p class="fw-semibold mb-1"
+                               th:text="${encomenda.pagamento != null} ? ${encomenda.pagamento.metodoPagamento.nome} : 'A definir'">Metodo</p>
+                            <p class="small mb-2">
+                                <span class="badge-estado"
+                                      th:classappend="'text-bg-' + ${encomenda.pagamento.status.corBootstrap}"
+                                      th:text="${encomenda.pagamento.status.descricao}">Pendente</span>
+                                <span class="fw-semibold ms-2"
+                                      th:text="${@moeda.mt(encomenda.pagamento.valor)}">0,00 MT</span>
+                            </p>
+                            <p class="small texto-suave mb-0" th:text="${encomenda.pagamento.instrucoes}">Instrucoes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aviso-demo mt-4">
+                    <i class="bi bi-info-circle me-1"></i>
+                    O pagamento e confirmado manualmente pela equipa apos verificacao do comprovativo.
+                    Pode acompanhar o estado em
+                    <a th:href="@{/conta/encomendas/{id}(id=${encomenda.id})}">As minhas encomendas</a>
+                    ou em <a th:href="@{/consulta}">consultar encomenda</a>.
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <a class="btn btn-azul" th:href="@{/conta/encomendas}">
+                        <i class="bi bi-box-seam me-1"></i>As minhas encomendas
+                    </a>
+                    <a class="btn btn-contorno" th:href="@{/produtos}">Continuar a comprar</a>
+                    <button class="btn btn-contorno ms-auto" type="button" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i>Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

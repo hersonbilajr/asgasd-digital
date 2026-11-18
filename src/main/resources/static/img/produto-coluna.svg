@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Coluna Bluetooth">
+  <rect x="128" y="62" width="144" height="186" rx="30" fill="#0d2544" stroke="#2a4d78" stroke-width="2"/>
+  <g fill="#17406e">
+    <circle cx="176" cy="104" r="9"/><circle cx="200" cy="104" r="9"/><circle cx="224" cy="104" r="9"/>
+    <circle cx="176" cy="134" r="9"/><circle cx="200" cy="134" r="9"/><circle cx="224" cy="134" r="9"/>
+    <circle cx="176" cy="164" r="9"/><circle cx="200" cy="164" r="9"/><circle cx="224" cy="164" r="9"/>
+    <circle cx="176" cy="194" r="9"/><circle cx="200" cy="194" r="9"/><circle cx="224" cy="194" r="9"/>
+  </g>
+  <rect x="176" y="222" width="48" height="8" rx="4" fill="#00d3a7"/>
+  <path d="M292 130c10 14 10 36 0 50" fill="none" stroke="#00d3a7" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+  <path d="M308 112c20 24 20 62 0 86" fill="none" stroke="#5b8def" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+</svg>

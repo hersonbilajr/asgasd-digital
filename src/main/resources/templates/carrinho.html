@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="pt">
+<head th:replace="~{fragments/layout :: head('Carrinho')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Carrinho</li>
+            </ol>
+        </nav>
+
+        <h1 class="h3 mb-4">Carrinho de compras</h1>
+
+        <div class="vazio-estado" th:if="${carrinho.vazio}">
+            <i class="bi bi-cart-x"></i>
+            <h2 class="h5">O seu carrinho esta vazio</h2>
+            <p class="mb-3">Explore o catalogo e adicione os produtos que deseja comprar.</p>
+            <a class="btn btn-azul" th:href="@{/produtos}">Ir para o catalogo</a>
+        </div>
+
+        <div class="row g-4" th:if="${!carrinho.vazio}">
+            <div class="col-lg-8">
+                <div class="linha-carrinho" th:each="item : ${carrinho.itens}">
+                    <img th:src="@{${item.produto.imagemOuPadrao}}" th:alt="${item.produto.nome}">
+                    <div class="flex-grow-1">
+                        <a class="fw-semibold d-block" th:href="@{/produto/{slug}(slug=${item.produto.slug})}"
+                           th:text="${item.produto.nome}">Produto</a>
+                        <small class="texto-suave"
+                               th:text="${item.produto.categoria != null} ? ${item.produto.categoria.nome} : 'Geral'">Categoria</small>
+                        <div class="d-flex flex-wrap align-items-center gap-3 mt-2">
+                            <span class="small texto-suave"
+                                  th:text="|${@moeda.mt(item.precoUnitario)} / unidade|">Preco</span>
+                            <form th:action="@{/carrinho/atualizar}" method="post" class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="itemId" th:value="${item.id}">
+                                <div class="quantidade-controlo" data-quantidade>
+                                    <button type="button" data-menos aria-label="Diminuir">&minus;</button>
+                                    <input type="number" name="quantidade" th:value="${item.quantidade}" min="1"
+                                           th:max="${item.produto.stock}" onchange="this.form.submit()"
+                                           aria-label="Quantidade">
+                                    <button type="button" data-mais aria-label="Aumentar">&plus;</button>
+                                </div>
+                                <noscript><button class="btn btn-sm btn-contorno" type="submit">Atualizar</button></noscript>
+                            </form>
+                            <form th:action="@{/carrinho/remover}" method="post">
+                                <input type="hidden" name="itemId" th:value="${item.id}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                    <i class="bi bi-trash"></i> Remover
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="fw-bold" th:text="${@moeda.mt(item.subtotal)}">0,00 MT</span>
+                        <small class="d-block texto-suave" th:text="|Stock: ${item.produto.stock}|">Stock</small>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a class="btn btn-contorno" th:href="@{/produtos}">
+                        <i class="bi bi-arrow-left me-1"></i>Continuar a comprar
+                    </a>
+                    <form th:action="@{/carrinho/limpar}" method="post" data-confirmar="Tem a certeza que deseja esvaziar o carrinho?">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="bi bi-x-circle me-1"></i>Esvaziar carrinho
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <aside class="resumo-compra">
+                    <h2 class="h5 mb-3">Resumo</h2>
+                    <div class="linha">
+                        <span>Subtotal</span>
+                        <span th:text="${@moeda.mt(carrinho.subtotal)}">0,00 MT</span>
+                    </div>
+                    <div class="linha">
+                        <span>Envio estimado</span>
+                        <span th:text="${custoEnvio.signum() == 0} ? 'Gratis' : ${@moeda.mt(custoEnvio)}">0,00 MT</span>
+                    </div>
+                    <div class="linha">
+                        <span>Artigos</span>
+                        <span th:text="${carrinho.quantidadeTotal}">0</span>
+                    </div>
+                    <div class="linha total">
+                        <span>Total</span>
+                        <span th:text="${@moeda.mt(total)}">0,00 MT</span>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <a class="btn btn-acento btn-lg" th:href="@{/checkout}">
+                            Finalizar encomenda <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <p class="small texto-suave text-center mt-2 mb-3">
+                        Ser&aacute; pedido o inicio de sess&atilde;o para concluir a compra.
+                    </p>
+
+                    <div class="aviso-demo">
+                        <i class="bi bi-info-circle me-1"></i>
+                        O envio &eacute; calculado ao finalizar. Encomendas acima de
+                        <strong>5 000,00 MT</strong> t&ecirc;m envio gr&aacute;tis.
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<button th:replace="~{fragments/layout :: topo}"></button>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Rato sem fios">
+  <rect x="146" y="46" width="108" height="196" rx="54" fill="#0d2544" stroke="#2a4d78" stroke-width="2"/>
+  <path d="M200 52v76" stroke="#243f63" stroke-width="2"/>
+  <rect x="192" y="76" width="16" height="34" rx="8" fill="#00d3a7"/>
+  <circle cx="200" cy="150" r="5" fill="#5b8def"/>
+  <rect x="176" y="196" width="48" height="30" rx="8" fill="#17406e"/>
+  <path d="M296 128c14 0 26 12 26 26s-12 26-26 26" fill="none" stroke="#00d3a7" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+  <path d="M300 106c26 0 46 21 46 48s-20 48-46 48" fill="none" stroke="#5b8def" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+</svg>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('Encomenda')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/conta}">A minha conta</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/conta/encomendas}">Encomendas</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${encomenda.referencia}">Referencia</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <h1 class="h3 mb-1" th:text="${encomenda.referencia}">ASG-00000000-000000</h1>
+                <p class="texto-suave mb-0"
+                   th:text="|Registada em ${#temporals.format(encomenda.criadoEm, 'dd/MM/yyyy HH:mm')}|">Data</p>
+            </div>
+            <span class="badge-estado fs-6"
+                  th:classappend="'text-bg-' + ${encomenda.status.corBootstrap}"
+                  th:text="${encomenda.status.descricao}">Pendente</span>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="cartao-admin mb-4">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Artigos</h2>
+                    <div class="table-responsive">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th class="text-center">Qtd.</th>
+                                <th class="text-end">Preco</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${encomenda.itens}">
+                                <td>
+                                    <a class="fw-semibold" th:if="${item.produto != null}"
+                                       th:href="@{/produto/{slug}(slug=${item.produto.slug})}"
+                                       th:text="${item.nomeProduto}">Produto</a>
+                                    <span class="fw-semibold" th:if="${item.produto == null}"
+                                          th:text="${item.nomeProduto}">Produto</span>
+                                </td>
+                                <td class="text-center" th:text="${item.quantidade}">1</td>
+                                <td class="text-end" th:text="${@moeda.mt(item.precoUnitario)}">0,00 MT</td>
+                                <td class="text-end" th:text="${@moeda.mt(item.subtotal)}">0,00 MT</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between small">
+                        <span>Subtotal</span><span th:text="${@moeda.mt(encomenda.subtotal)}">0,00 MT</span>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span>Envio</span>
+                        <span th:text="${encomenda.custoEnvio.signum() == 0} ? 'Gratis' : ${@moeda.mt(encomenda.custoEnvio)}">0,00 MT</span>
+                    </div>
+                    <div class="d-flex justify-content-between fw-bold mt-2">
+                        <span>Total</span><span th:text="${@moeda.mt(encomenda.total)}">0,00 MT</span>
+                    </div>
+                </div>
+
+                <div class="cartao-admin" th:if="${encomenda.pagamento != null}">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Pagamento</h2>
+                    <p class="mb-1 fw-semibold"
+                       th:text="${encomenda.pagamento.metodoPagamento != null ? encomenda.pagamento.metodoPagamento.nome : 'Metodo nao definido'}">Metodo</p>
+                    <p class="mb-2">
+                        <span class="badge-estado"
+                              th:classappend="'text-bg-' + ${encomenda.pagamento.status.corBootstrap}"
+                              th:text="${encomenda.pagamento.status.descricao}">Pendente</span>
+                    </p>
+                    <p class="small texto-suave" th:text="${encomenda.pagamento.instrucoes}">Instrucoes</p>
+                    <p class="small mb-3" th:if="${encomenda.pagamento.referenciaExterna}">
+                        Comprovativo registado:
+                        <strong th:text="${encomenda.pagamento.referenciaExterna}">Referencia</strong>
+                    </p>
+
+                    <form th:if="${encomenda.pagamento.pendente}" th:action="@{/conta/encomendas/{id}/comprovativo(id=${encomenda.id})}"
+                          method="post" class="row g-2 align-items-end">
+                        <div class="col-sm-8">
+                            <label class="form-label" for="referencia">Referencia do comprovativo</label>
+                            <input class="form-control" id="referencia" name="referencia" maxlength="120"
+                                   placeholder="Ex.: TRF-2026-00123 / ID M-Pesa">
+                        </div>
+                        <div class="col-sm-4">
+                            <button class="btn btn-azul w-100" type="submit">Registar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="cartao-admin mb-3">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Entrega</h2>
+                    <p class="fw-semibold mb-1" th:text="${encomenda.nomeContacto}">Nome</p>
+                    <p class="small mb-1" th:text="${encomenda.telefoneContacto}">Telefone</p>
+                    <p class="small mb-1" th:text="${encomenda.emailContacto}">Email</p>
+                    <p class="small texto-suave mb-0" th:text="${encomenda.enderecoEntrega}">Endereco</p>
+                    <p class="small mt-2 mb-0" th:if="${encomenda.notas}">
+                        <strong>Notas:</strong> <span th:text="${encomenda.notas}"></span>
+                    </p>
+                </div>
+
+                <div class="cartao-admin">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Accoes</h2>
+                    <a class="btn btn-contorno btn-sm w-100 mb-2" th:href="@{/consulta}">
+                        <i class="bi bi-search me-1"></i>Consultar publicamente
+                    </a>
+                    <form th:if="${encomenda.cancelavel}"
+                          th:action="@{/conta/encomendas/{id}/cancelar(id=${encomenda.id})}" method="post"
+                          data-confirmar="Cancelar esta encomenda? O stock sera reposto.">
+                        <button class="btn btn-outline-danger btn-sm w-100" type="submit">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar encomenda
+                        </button>
+                    </form>
+                    <p class="small texto-suave mt-3 mb-0">
+                        Precisa de alterar algo? <a class="texto-acento" th:href="@{/contacto}">Contacte-nos</a>
+                        indicando a referencia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

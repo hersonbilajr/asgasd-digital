@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/admin :: head('Cliente')}"></head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin :: sidebar('clientes')}"></aside>
+
+    <div class="admin-conteudo">
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="admin-topo">
+            <div>
+                <span class="eyebrow">Cliente</span>
+                <h1 th:text="${cliente.nome}">Nome</h1>
+                <p class="texto-suave small mb-0" th:text="${cliente.email}">email</p>
+            </div>
+            <a class="btn btn-contorno" th:href="@{/admin/clientes}">
+                <i class="bi bi-arrow-left me-1"></i>Voltar
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="cartao-admin">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="avatar-iniciais" style="width:56px;height:56px;font-size:1.1rem"
+                              th:text="${cliente.iniciais}">AD</span>
+                        <div>
+                            <strong class="d-block" th:text="${cliente.nome}">Nome</strong>
+                            <small class="texto-suave" th:text="${cliente.email}">Email</small>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled small mb-0 d-grid gap-2">
+                        <li><span class="texto-suave">Telefone:</span> <span th:text="${cliente.telefone} ?: '-'"></span></li>
+                        <li><span class="texto-suave">Registado em:</span>
+                            <span th:text="${#temporals.format(cliente.criadoEm, 'dd/MM/yyyy')}"></span></li>
+                        <li><span class="texto-suave">Estado:</span>
+                            <span th:text="${cliente.ativo} ? 'Ativa' : 'Inativa'"></span></li>
+                        <li><span class="texto-suave">Perfil:</span>
+                            <span th:text="${cliente.administrador} ? 'Administrador' : 'Cliente'"></span></li>
+                        <li><span class="texto-suave">Enderecos:</span>
+                            <span th:text="${#lists.size(enderecosCliente)}"></span></li>
+                    </ul>
+
+                    <div class="mt-3" th:if="${!#lists.isEmpty(enderecosCliente)}">
+                        <h2 class="h6 text-uppercase texto-suave mb-2">Enderecos guardados</h2>
+                        <div class="small mb-2" th:each="end : ${enderecosCliente}">
+                            <span class="badge text-bg-light" th:if="${end.principal}">Principal</span>
+                            <span class="texto-suave d-block" th:text="${end.resumo}">Endereco</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="cartao-admin">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Encomendas do cliente</h2>
+
+                    <div class="vazio-estado" th:if="${#lists.isEmpty(encomendasCliente)}">
+                        <i class="bi bi-inbox"></i>
+                        Este cliente ainda nao fez encomendas.
+                    </div>
+
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(encomendasCliente)}">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Referencia</th>
+                                <th>Data</th>
+                                <th>Estado</th>
+                                <th class="text-end">Total</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="e : ${encomendasCliente}">
+                                <td class="fw-semibold" th:text="${e.referencia}">ASG</td>
+                                <td class="small" th:text="${#temporals.format(e.criadoEm, 'dd/MM/yyyy')}">Data</td>
+                                <td>
+                                    <span class="badge-estado"
+                                          th:classappend="'text-bg-' + ${e.status.corBootstrap}"
+                                          th:text="${e.status.descricao}">Estado</span>
+                                </td>
+                                <td class="text-end" th:text="${@moeda.mt(e.total)}">0,00 MT</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-contorno"
+                                       th:href="@{/admin/encomendas/{id}(id=${e.id})}">Abrir</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/admin :: scripts}"></div>
+</body>
+</html>

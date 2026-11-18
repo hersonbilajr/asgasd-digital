@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: ${TEST_DATABASE_URL:jdbc:postgresql://localhost:5432/asgasd_test}
+    username: ${TEST_DATABASE_USERNAME:asgasd}
+    password: ${TEST_DATABASE_PASSWORD:asgasd}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+    clean-disabled: false
+  thymeleaf:
+    cache: false
+  mail:
+    host: ""
+
+app:
+  nome: Asgasd Digital
+  moeda: MT
+  base-url: http://localhost:8080
+  upload:
+    dir: ./target/uploads-test
+  envio:
+    custo: 250.00
+    gratis-a-partir-de: 5000.00
+  seed:
+    demo: true
+    admin-email: admin.teste@asgasd.co.mz
+    admin-password: Admin@2026
+    cliente-email: cliente.teste@exemplo.co.mz
+    cliente-password: Cliente@2026
+
+logging:
+  level:
+    root: WARN
+    com.asgasd.digital: INFO

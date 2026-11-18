@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Camara de seguranca">
+  <path d="M120 92 286 62l16 58-166 30-16-58Z" fill="#0d2544" stroke="#2a4d78" stroke-width="2"/>
+  <circle cx="292" cy="94" r="26" fill="#123a63" stroke="#2a4d78" stroke-width="2"/>
+  <circle cx="292" cy="94" r="13" fill="#071528"/>
+  <circle cx="286" cy="88" r="4" fill="#5b8def"/>
+  <rect x="186" y="146" width="30" height="46" fill="#17406e"/>
+  <path d="M140 190h112l24 40H116l24-40Z" fill="#17406e"/>
+  <rect x="128" y="228" width="136" height="12" rx="6" fill="#0d2544"/>
+  <path d="M320 108c22 20 22 52 0 72" stroke="#00d3a7" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+</svg>

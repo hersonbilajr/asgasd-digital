@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/admin :: head('Painel')}"></head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin :: sidebar('painel')}"></aside>
+
+    <div class="admin-conteudo">
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="admin-topo">
+            <div>
+                <span class="eyebrow">Administracao</span>
+                <h1>Painel de vendas</h1>
+                <p class="texto-suave mb-0 small">
+                    Indicadores calculados a partir das encomendas reais registadas na base de dados.
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-contorno" th:href="@{/admin/produtos/novo}">
+                    <i class="bi bi-plus-lg me-1"></i>Novo produto
+                </a>
+                <a class="btn btn-azul" th:href="@{/admin/encomendas}">
+                    <i class="bi bi-receipt me-1"></i>Encomendas
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="kpi h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="rotulo">Total faturado</span>
+                        <span class="icone-kpi"><i class="bi bi-cash-stack"></i></span>
+                    </div>
+                    <div class="valor" th:text="${@moeda.mt(indicadores.totalFaturado)}">0,00 MT</div>
+                    <span class="extra">encomendas nao canceladas</span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="kpi h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="rotulo">Entregue</span>
+                        <span class="icone-kpi"><i class="bi bi-check2-circle"></i></span>
+                    </div>
+                    <div class="valor" th:text="${@moeda.mt(indicadores.totalEntregue)}">0,00 MT</div>
+                    <span class="extra">encomendas com estado Entregue</span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="kpi h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="rotulo">Encomendas</span>
+                        <span class="icone-kpi"><i class="bi bi-receipt"></i></span>
+                    </div>
+                    <div class="valor" th:text="${indicadores.totalEncomendas}">0</div>
+                    <span class="extra">
+                        Ticket medio: <span th:text="${@moeda.mt(indicadores.ticketMedio)}">0,00 MT</span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="kpi h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="rotulo">Clientes</span>
+                        <span class="icone-kpi"><i class="bi bi-people"></i></span>
+                    </div>
+                    <div class="valor" th:text="${indicadores.totalClientes}">0</div>
+                    <span class="extra">
+                        <span th:text="${indicadores.totalProdutos}">0</span> produtos,
+                        <span th:text="${indicadores.semStock}">0</span> sem stock
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-xl-8">
+                <div class="cartao-admin mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h6 text-uppercase texto-suave mb-0">Encomendas recentes</h2>
+                        <a class="small texto-acento fw-semibold" th:href="@{/admin/encomendas}">Ver todas</a>
+                    </div>
+
+                    <div class="vazio-estado" th:if="${#lists.isEmpty(indicadores.encomendasRecentes)}">
+                        <i class="bi bi-inbox"></i>
+                        Ainda nao existem encomendas registadas.
+                    </div>
+
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(indicadores.encomendasRecentes)}">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Referencia</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Estado</th>
+                                <th class="text-end">Total</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="e : ${indicadores.encomendasRecentes}">
+                                <td class="fw-semibold" th:text="${e.referencia}">ASG</td>
+                                <td th:text="${e.nomeContacto}">Cliente</td>
+                                <td th:text="${#temporals.format(e.criadoEm, 'dd/MM/yyyy')}">Data</td>
+                                <td>
+                                    <span class="badge-estado"
+                                          th:classappend="'text-bg-' + ${e.status.corBootstrap}"
+                                          th:text="${e.status.descricao}">Estado</span>
+                                </td>
+                                <td class="text-end" th:text="${@moeda.mt(e.total)}">0,00 MT</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-contorno"
+                                       th:href="@{/admin/encomendas/{id}(id=${e.id})}">Abrir</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="cartao-admin">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Produtos mais vendidos</h2>
+                    <div class="vazio-estado" th:if="${#lists.isEmpty(indicadores.maisVendidos)}">
+                        <i class="bi bi-graph-up"></i>
+                        Sem vendas registadas. O ranking aparece depois das primeiras encomendas.
+                    </div>
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(indicadores.maisVendidos)}">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Stock</th>
+                                <th class="text-end">Preco</th>
+                                <th class="text-end">Acao</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="p, i : ${indicadores.maisVendidos}">
+                                <td>
+                                    <span class="badge text-bg-light me-2" th:text="${i.count}">1</span>
+                                    <span th:text="${p.nome}">Produto</span>
+                                </td>
+                                <td th:text="${p.stock}">0</td>
+                                <td class="text-end" th:text="${@moeda.mt(p.precoVenda)}">0,00 MT</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-contorno"
+                                       th:href="@{/admin/produtos/{id}/editar(id=${p.id})}">Editar</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4">
+                <div class="cartao-admin mb-4">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Encomendas por estado</h2>
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom"
+                            th:each="entrada : ${indicadores.porStatus}">
+                            <span class="badge-estado"
+                                  th:classappend="'text-bg-' + ${entrada.key.corBootstrap}"
+                                  th:text="${entrada.key.descricao}">Estado</span>
+                            <strong th:text="${entrada.value}">0</strong>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cartao-admin mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h2 class="h6 text-uppercase texto-suave mb-0">Stock baixo</h2>
+                        <a class="small texto-acento fw-semibold" th:href="@{/admin/produtos}">Gerir</a>
+                    </div>
+                    <div class="small texto-suave" th:if="${#lists.isEmpty(indicadores.stockBaixo)}">
+                        Nenhum produto com stock critico.
+                    </div>
+                    <ul class="list-unstyled mb-0 small">
+                        <li class="d-flex justify-content-between py-1 border-bottom"
+                            th:each="p : ${indicadores.stockBaixo}">
+                            <span th:text="${p.nome}">Produto</span>
+                            <span class="fw-bold"
+                                  th:classappend="${p.stock == 0} ? 'text-danger' : 'text-warning'"
+                                  th:text="${p.stock}">0</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cartao-admin">
+                    <h2 class="h6 text-uppercase texto-suave mb-2">Mensagens de contacto</h2>
+                    <p class="small texto-suave mb-2">
+                        <span th:text="${indicadores.mensagensNaoLidas}">0</span> mensagem(ns) nao lida(s).
+                    </p>
+                    <a class="btn btn-contorno btn-sm w-100" th:href="@{/admin/mensagens}">Abrir mensagens</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/admin :: scripts}"></div>
+</body>
+</html>

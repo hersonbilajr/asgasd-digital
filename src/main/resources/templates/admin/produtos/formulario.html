@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/admin :: head('Produto')}"></head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin :: sidebar('produtos')}"></aside>
+
+    <div class="admin-conteudo">
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="admin-topo">
+            <div>
+                <span class="eyebrow">Catalogo</span>
+                <h1 th:text="${produto.id == null} ? 'Novo produto' : 'Editar produto'">Novo produto</h1>
+            </div>
+            <a class="btn btn-contorno" th:href="@{/admin/produtos}">
+                <i class="bi bi-arrow-left me-1"></i>Voltar
+            </a>
+        </div>
+
+        <form th:action="@{/admin/produtos/guardar}" th:object="${produto}" method="post"
+              enctype="multipart/form-data" novalidate>
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{imagemUrl}">
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="cartao-admin mb-4">
+                        <h2 class="h6 text-uppercase texto-suave mb-3">Informacao do produto</h2>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label" for="nome">Nome *</label>
+                                <input class="form-control" id="nome" th:field="*{nome}"
+                                       th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{nome}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="sku">SKU / Referencia</label>
+                                <input class="form-control" id="sku" th:field="*{sku}"
+                                       th:classappend="${#fields.hasErrors('sku')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{sku}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="categoriaId">Categoria *</label>
+                                <select class="form-select" id="categoriaId" th:field="*{categoriaId}"
+                                        th:classappend="${#fields.hasErrors('categoriaId')} ? 'is-invalid'">
+                                    <option value="">Selecione...</option>
+                                    <option th:each="c : ${categoriasAdmin}" th:value="${c.id}"
+                                            th:text="${c.nome}">Categoria</option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{categoriaId}"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="preco">Preco (MT) *</label>
+                                <input class="form-control" type="number" step="0.01" min="0" id="preco"
+                                       th:field="*{preco}"
+                                       th:classappend="${#fields.hasErrors('preco')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{preco}"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="precoPromocional">Preco promocional</label>
+                                <input class="form-control" type="number" step="0.01" min="0" id="precoPromocional"
+                                       th:field="*{precoPromocional}"
+                                       th:classappend="${#fields.hasErrors('precoPromocional')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{precoPromocional}"></div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="descricaoCurta">Descricao curta</label>
+                                <input class="form-control" id="descricaoCurta" th:field="*{descricaoCurta}"
+                                       maxlength="300" placeholder="Ex.: 16 GB RAM, SSD 512 GB">
+                                <div class="invalid-feedback d-block" th:errors="*{descricaoCurta}"></div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="descricao">Descricao completa</label>
+                                <textarea class="form-control" id="descricao" rows="7" th:field="*{descricao}"></textarea>
+                                <div class="invalid-feedback d-block" th:errors="*{descricao}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="cartao-admin mb-4">
+                        <h2 class="h6 text-uppercase texto-suave mb-3">Fotografia</h2>
+                        <div class="text-center mb-3">
+                            <img data-preview-alvo
+                                 th:src="${produto.imagemUrl != null && !produto.imagemUrl.isBlank()} ? @{${produto.imagemUrl}} : @{/img/produto-placeholder.svg}"
+                                 alt="Pre-visualizacao" style="max-width:100%;max-height:170px;object-fit:contain">
+                        </div>
+                        <label class="form-label" for="imagem">Carregar imagem (JPG, PNG, WEBP, GIF)</label>
+                        <input class="form-control" type="file" id="imagem" name="imagem" accept="image/*"
+                               data-preview-imagem>
+                        <div class="form-text">Maximo 3 MB. A imagem substitui a atual.</div>
+                    </div>
+
+                    <div class="cartao-admin mb-4">
+                        <h2 class="h6 text-uppercase texto-suave mb-3">Stock e visibilidade</h2>
+                        <div class="mb-3">
+                            <label class="form-label" for="stock">Stock disponivel *</label>
+                            <input class="form-control" type="number" min="0" id="stock" th:field="*{stock}"
+                                   th:classappend="${#fields.hasErrors('stock')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{stock}"></div>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="ativo" th:field="*{ativo}">
+                            <label class="form-check-label" for="ativo">Produto ativo na loja</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="destaque" th:field="*{destaque}">
+                            <label class="form-check-label" for="destaque">Mostrar nos destaques</label>
+                        </div>
+                    </div>
+
+                    <div class="cartao-admin">
+                        <button class="btn btn-acento w-100" type="submit">
+                            <i class="bi bi-check2-circle me-1"></i>Guardar produto
+                        </button>
+                        <a class="btn btn-link w-100 mt-1" th:href="@{/admin/produtos}">Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{fragments/admin :: scripts}"></div>
+</body>
+</html>

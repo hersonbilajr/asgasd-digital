@@ -1,0 +1,38 @@
+# ---- Java / Maven ----
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.log
+hs_err_pid*
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ---- IDE ----
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+nbproject/
+
+# ---- Segredos e ambiente ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---- Uploads de imagens (conteudo gerado em execucao) ----
+uploads/
+media/
+
+# ---- Sistema ----
+.DS_Store
+Thumbs.db

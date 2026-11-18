@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('Contacto')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Contacto</li>
+            </ol>
+        </nav>
+
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <span class="eyebrow">Fale connosco</span>
+                <h1 class="h3 mb-3">Estamos aqui para ajudar</h1>
+                <p class="texto-suave">
+                    Duvidas sobre produtos, encomendas ou pagamentos? Envie uma mensagem
+                    ou fale diretamente com a equipa pelos contactos abaixo.
+                </p>
+
+                <div class="cartao-admin mb-3">
+                    <ul class="list-unstyled mb-0 d-grid gap-3">
+                        <li class="d-flex gap-3">
+                            <i class="bi bi-geo-alt fs-5 texto-acento"></i>
+                            <div>
+                                <strong class="d-block small text-uppercase texto-suave">Endereco</strong>
+                                <span th:text="${config['contacto.endereco']}">Endereco</span>
+                            </div>
+                        </li>
+                        <li class="d-flex gap-3">
+                            <i class="bi bi-telephone fs-5 texto-acento"></i>
+                            <div>
+                                <strong class="d-block small text-uppercase texto-suave">Telefone</strong>
+                                <a th:href="'tel:' + ${config['contacto.telefone']}"
+                                   th:text="${config['contacto.telefone']}">Telefone</a>
+                            </div>
+                        </li>
+                        <li class="d-flex gap-3">
+                            <i class="bi bi-envelope fs-5 texto-acento"></i>
+                            <div>
+                                <strong class="d-block small text-uppercase texto-suave">Email</strong>
+                                <a th:href="'mailto:' + ${config['contacto.email']}"
+                                   th:text="${config['contacto.email']}">Email</a>
+                            </div>
+                        </li>
+                        <li class="d-flex gap-3">
+                            <i class="bi bi-clock fs-5 texto-acento"></i>
+                            <div>
+                                <strong class="d-block small text-uppercase texto-suave">Horario</strong>
+                                <span th:text="${config['contacto.horario']}">Horario</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <a class="btn btn-acento w-100 mb-2" th:href="${whatsappLink}" target="_blank" rel="noopener">
+                    <i class="bi bi-whatsapp me-2"></i>Contactar pelo WhatsApp
+                </a>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-contorno flex-fill" th:if="${config['social.facebook']}"
+                       th:href="${config['social.facebook']}" target="_blank" rel="noopener">
+                        <i class="bi bi-facebook me-1"></i>Facebook
+                    </a>
+                    <a class="btn btn-contorno flex-fill" th:if="${config['social.instagram']}"
+                       th:href="${config['social.instagram']}" target="_blank" rel="noopener">
+                        <i class="bi bi-instagram me-1"></i>Instagram
+                    </a>
+                </div>
+
+                <div class="aviso-demo mt-3">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Todos os dados de contacto sao demonstrativos e podem ser alterados em
+                    <em>Painel administrativo &rarr; Configuracoes</em>.
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <form class="cartao-form" th:action="@{/contacto}" th:object="${mensagemForm}" method="post" novalidate>
+                    <h2 class="h5 mb-3">Enviar mensagem</h2>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="nome">Nome *</label>
+                            <input class="form-control" id="nome" th:field="*{nome}"
+                                   th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{nome}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="email">Email *</label>
+                            <input class="form-control" type="email" id="email" th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{email}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="telefone">Telefone</label>
+                            <input class="form-control" id="telefone" th:field="*{telefone}"
+                                   th:classappend="${#fields.hasErrors('telefone')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{telefone}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="assunto">Assunto *</label>
+                            <input class="form-control" id="assunto" th:field="*{assunto}"
+                                   placeholder="Ex.: duvida sobre um produto"
+                                   th:classappend="${#fields.hasErrors('assunto')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{assunto}"></div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="mensagem">Mensagem *</label>
+                            <textarea class="form-control" id="mensagem" rows="6" th:field="*{mensagem}"
+                                      th:classappend="${#fields.hasErrors('mensagem')} ? 'is-invalid'"></textarea>
+                            <div class="invalid-feedback" th:errors="*{mensagem}"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-azul mt-4" type="submit">
+                        <i class="bi bi-send me-1"></i>Enviar mensagem
+                    </button>
+                    <p class="small texto-suave mt-2 mb-0">
+                        A mensagem fica registada na base de dados e e consultada pela equipa no painel administrativo.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

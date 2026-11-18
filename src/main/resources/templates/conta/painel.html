@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('A minha conta')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <span class="eyebrow">Area do cliente</span>
+                <h1 class="h3 mb-1">Ola, <span th:text="${usuarioConta.primeiroNome}">Cliente</span></h1>
+                <p class="texto-suave mb-0" th:text="${usuarioConta.email}">email</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-contorno" th:href="@{/conta/perfil}"><i class="bi bi-person-gear me-1"></i>Perfil</a>
+                <a class="btn btn-azul" th:href="@{/produtos}"><i class="bi bi-bag me-1"></i>Comprar</a>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="kpi">
+                    <span class="rotulo">Encomendas</span>
+                    <div class="valor" th:text="${#lists.size(encomendas)}">0</div>
+                    <span class="extra">registadas na sua conta</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi">
+                    <span class="rotulo">Ultima encomenda</span>
+                    <div class="valor" th:text="${#lists.isEmpty(encomendas)} ? '-' : ${encomendas[0].referencia}">-</div>
+                    <span class="extra"
+                          th:text="${#lists.isEmpty(encomendas)} ? 'Ainda sem compras' : ${encomendas[0].status.descricao}">-</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi">
+                    <span class="rotulo">Enderecos guardados</span>
+                    <div class="valor" th:text="${#lists.size(enderecos)}">0</div>
+                    <span class="extra">usados para agilizar o checkout</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="cartao-admin">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h6 text-uppercase texto-suave mb-0">Encomendas recentes</h2>
+                        <a class="small texto-acento fw-semibold" th:href="@{/conta/encomendas}">Ver todas</a>
+                    </div>
+
+                    <div class="vazio-estado" th:if="${#lists.isEmpty(encomendas)}">
+                        <i class="bi bi-box"></i>
+                        Ainda nao fez encomendas.
+                        <div class="mt-2"><a class="btn btn-sm btn-azul" th:href="@{/produtos}">Ver catalogo</a></div>
+                    </div>
+
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(encomendas)}">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Referencia</th>
+                                <th>Data</th>
+                                <th>Estado</th>
+                                <th class="text-end">Total</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="e : ${encomendas}" th:if="${eStat.index < 5}">
+                                <td class="fw-semibold" th:text="${e.referencia}">ASG</td>
+                                <td th:text="${#temporals.format(e.criadoEm, 'dd/MM/yyyy')}">Data</td>
+                                <td>
+                                    <span class="badge-estado text-bg-secondary"
+                                          th:classappend="'text-bg-' + ${e.status.corBootstrap}"
+                                          th:text="${e.status.descricao}">Pendente</span>
+                                </td>
+                                <td class="text-end" th:text="${@moeda.mt(e.total)}">0,00 MT</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-contorno"
+                                       th:href="@{/conta/encomendas/{id}(id=${e.id})}">Ver</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="cartao-admin">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Dados da conta</h2>
+                    <p class="mb-1 fw-semibold" th:text="${usuarioConta.nome}">Nome</p>
+                    <p class="small mb-1" th:text="${usuarioConta.email}">Email</p>
+                    <p class="small mb-3" th:text="${usuarioConta.telefone} ?: 'Sem telefone registado'">Telefone</p>
+                    <a class="btn btn-contorno btn-sm w-100" th:href="@{/conta/perfil}">Editar dados</a>
+                </div>
+
+                <div class="cartao-admin mt-3" th:if="${!#lists.isEmpty(enderecos)}">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Enderecos</h2>
+                    <div class="mb-2" th:each="end : ${enderecos}">
+                        <span class="badge text-bg-light" th:if="${end.principal}">Principal</span>
+                        <p class="small texto-suave mb-0" th:text="${end.resumo}">Endereco</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

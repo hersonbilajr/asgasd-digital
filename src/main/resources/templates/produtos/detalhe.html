@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head(${produto.nome})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/produtos}">Catalogo</a></li>
+                <li class="breadcrumb-item" th:if="${produto.categoria != null}">
+                    <a th:href="@{/produtos(categoriaId=${produto.categoria.id})}"
+                       th:text="${produto.categoria.nome}">Categoria</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${produto.nome}">Produto</li>
+            </ol>
+        </nav>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="produto-galeria">
+                    <img th:src="@{${produto.imagemOuPadrao}}" th:alt="${produto.nome}">
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <span class="produto-categoria"
+                      th:text="${produto.categoria != null} ? ${produto.categoria.nome} : 'Geral'">Categoria</span>
+                <h1 class="produto-titulo mt-2" th:text="${produto.nome}">Nome do produto</h1>
+                <p class="texto-suave" th:text="${produto.descricaoCurta}">Descricao curta</p>
+
+                <div class="d-flex flex-wrap align-items-baseline gap-3 my-3">
+                    <span class="preco-grande" th:text="${@moeda.mt(produto.precoVenda)}">0,00 MT</span>
+                    <span class="preco-antigo fs-5" th:if="${produto.emPromocao}" th:text="${@moeda.mt(produto.preco)}">0,00 MT</span>
+                    <span class="badge rounded-pill text-bg-danger" th:if="${produto.emPromocao}"
+                          th:text="|-${produto.descontoPercentual}% desconto|">-10%</span>
+                </div>
+
+                <p class="mb-3">
+                    <span class="stock-indicador"
+                          th:classappend="${produto.stock == 0} ? 'stock-esgotado' : (${produto.stock <= 5} ? 'stock-baixo' : 'stock-ok')">
+                        <i class="bi bi-circle-fill" style="font-size:.5rem;vertical-align:middle"></i>
+                        <span th:text="${produto.stock == 0} ? 'Temporariamente sem stock' : (${produto.stock <= 5} ? |Ultimas ${produto.stock} unidades em stock| : |Em stock (${produto.stock} unidades)|)">Em stock</span>
+                    </span>
+                    <span class="texto-suave small ms-2" th:if="${produto.sku}"
+                          th:text="|Ref. ${produto.sku}|">Ref.</span>
+                </p>
+
+                <form th:action="@{/carrinho/adicionar}" method="post" class="d-flex flex-wrap align-items-center gap-2 mb-4">
+                    <input type="hidden" name="produtoId" th:value="${produto.id}">
+                    <div class="quantidade-controlo" data-quantidade>
+                        <button type="button" data-menos aria-label="Diminuir quantidade">&minus;</button>
+                        <input type="number" name="quantidade" value="1" min="1"
+                               th:max="${produto.stock > 0} ? ${produto.stock} : 1" aria-label="Quantidade">
+                        <button type="button" data-mais aria-label="Aumentar quantidade">&plus;</button>
+                    </div>
+                    <button class="btn btn-acento btn-lg flex-grow-1" type="submit" th:disabled="${produto.stock == 0}">
+                        <i class="bi bi-cart-plus me-2"></i>
+                        <span th:text="${produto.stock == 0} ? 'Sem stock' : 'Adicionar ao carrinho'">Adicionar ao carrinho</span>
+                    </button>
+                </form>
+
+                <ul class="lista-beneficios mb-4">
+                    <li><i class="bi bi-truck"></i><span>Entrega em Maputo e provincias com acompanhamento por referencia de encomenda.</span></li>
+                    <li><i class="bi bi-shield-check"></i><span>Produto com garantia do fabricante e apoio da Asgasd Digital.</span></li>
+                    <li><i class="bi bi-cash-coin"></i><span>Pagamento por transferencia, pagamento movel ou na entrega, confirmado manualmente.</span></li>
+                    <li><i class="bi bi-chat-dots"></i>
+                        <span>Duvidas? <a class="texto-acento fw-semibold" th:href="${whatsappLink}" target="_blank"
+                                          rel="noopener">Fale com a equipa pelo WhatsApp</a>.</span>
+                    </li>
+                </ul>
+
+                <div class="aviso-demo">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Imagens e descricoes sao demonstrativas e podem ser alteradas no painel administrativo.
+                </div>
+            </div>
+        </div>
+
+        <div class="cartao-admin mb-5" th:if="${produto.descricao}">
+            <h2 class="h5 mb-3">Descricao do produto</h2>
+            <p class="mb-0" style="white-space: pre-line" th:text="${produto.descricao}">Descricao</p>
+        </div>
+
+        <section th:if="${!#lists.isEmpty(relacionados)}">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="eyebrow">Tambem pode gostar</span>
+                    <h2 class="h4">Produtos relacionados</h2>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-6 col-lg-3" th:each="outro : ${relacionados}">
+                    <div th:replace="~{fragments/card :: card(${outro})}"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<button th:replace="~{fragments/layout :: topo}"></button>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

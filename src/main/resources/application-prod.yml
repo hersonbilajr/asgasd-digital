@@ -1,0 +1,17 @@
+spring:
+  thymeleaf:
+    cache: true
+  flyway:
+    clean-disabled: true
+
+server:
+  error:
+    include-message: never
+    include-stacktrace: never
+
+logging:
+  level:
+    root: INFO
+    com.asgasd.digital: INFO
+  file:
+    name: ${LOG_FILE:}

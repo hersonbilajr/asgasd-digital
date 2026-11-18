@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: asgasd
+      POSTGRES_USER: asgasd
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-asgasd-local}
+    volumes:
+      - asgasd-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U asgasd -d asgasd"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/asgasd
+      DATABASE_USERNAME: asgasd
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-asgasd-local}
+      PORT: 8080
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      UPLOAD_DIR: /app/uploads
+      SEED_DEMO: ${SEED_DEMO:-true}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@asgasd.co.mz}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@2026}
+      CLIENTE_PASSWORD: ${CLIENTE_PASSWORD:-Cliente@2026}
+    ports:
+      - "8080:8080"
+    volumes:
+      - asgasd-uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  asgasd-db-data:
+  asgasd-uploads:

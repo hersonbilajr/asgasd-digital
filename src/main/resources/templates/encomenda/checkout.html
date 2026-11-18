@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('Finalizar encomenda')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/carrinho}">Carrinho</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Finalizar encomenda</li>
+            </ol>
+        </nav>
+
+        <h1 class="h3 mb-4">Finalizar encomenda</h1>
+
+        <form th:action="@{/checkout/confirmar}" th:object="${dados}" method="post" novalidate>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="cartao-admin mb-3">
+                        <h2 class="h6 text-uppercase texto-suave mb-3">1. Dados de contacto</h2>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="nomeContacto">Nome de quem recebe *</label>
+                                <input class="form-control" id="nomeContacto" th:field="*{nomeContacto}"
+                                       th:classappend="${#fields.hasErrors('nomeContacto')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{nomeContacto}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="telefoneContacto">Telefone *</label>
+                                <input class="form-control" id="telefoneContacto" th:field="*{telefoneContacto}"
+                                       placeholder="+258 84 000 0000"
+                                       th:classappend="${#fields.hasErrors('telefoneContacto')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{telefoneContacto}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="emailContacto">Email *</label>
+                                <input class="form-control" type="email" id="emailContacto" th:field="*{emailContacto}"
+                                       th:classappend="${#fields.hasErrors('emailContacto')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{emailContacto}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cartao-admin mb-3">
+                        <h2 class="h6 text-uppercase texto-suave mb-3">2. Endereco de entrega</h2>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="provincia">Provincia *</label>
+                                <input class="form-control" id="provincia" th:field="*{provincia}"
+                                       list="listaProvincias"
+                                       th:classappend="${#fields.hasErrors('provincia')} ? 'is-invalid'">
+                                <datalist id="listaProvincias">
+                                    <option value="Maputo Cidade"></option>
+                                    <option value="Maputo Provincia"></option>
+                                    <option value="Gaza"></option>
+                                    <option value="Inhambane"></option>
+                                    <option value="Sofala"></option>
+                                    <option value="Manica"></option>
+                                    <option value="Tete"></option>
+                                    <option value="Zambezia"></option>
+                                    <option value="Nampula"></option>
+                                    <option value="Cabo Delgado"></option>
+                                    <option value="Niassa"></option>
+                                </datalist>
+                                <div class="invalid-feedback" th:errors="*{provincia}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="cidade">Cidade / Vila *</label>
+                                <input class="form-control" id="cidade" th:field="*{cidade}"
+                                       th:classappend="${#fields.hasErrors('cidade')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{cidade}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="bairro">Bairro *</label>
+                                <input class="form-control" id="bairro" th:field="*{bairro}"
+                                       th:classappend="${#fields.hasErrors('bairro')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{bairro}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="rua">Rua / Avenida e numero *</label>
+                                <input class="form-control" id="rua" th:field="*{rua}"
+                                       th:classappend="${#fields.hasErrors('rua')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{rua}"></div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="referencia">Ponto de referencia</label>
+                                <input class="form-control" id="referencia" th:field="*{referencia}"
+                                       placeholder="Ex.: perto da escola, portao azul">
+                                <div class="form-text">Ajuda o estafeta a encontrar o local.</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="guardarEndereco"
+                                           th:field="*{guardarEndereco}">
+                                    <label class="form-check-label small" for="guardarEndereco">
+                                        Guardar este endereco na minha conta
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cartao-admin mb-3">
+                        <h2 class="h6 text-uppercase texto-suave mb-3">3. Metodo de pagamento</h2>
+                        <div class="form-check border rounded-3 p-3 mb-2" th:each="m : ${metodosPagamento}">
+                            <input class="form-check-input" type="radio" th:field="*{metodoPagamentoId}"
+                                   th:value="${m.id}" th:id="|metodo-${m.id}|">
+                            <label class="form-check-label w-100" th:for="|metodo-${m.id}|">
+                                <strong th:text="${m.nome}">Metodo</strong>
+                                <span class="d-block small texto-suave" th:text="${m.descricao}">Descricao</span>
+                                <span class="d-block small mt-1" th:text="${m.instrucoes}">Instrucoes</span>
+                            </label>
+                        </div>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('metodoPagamentoId')}"
+                             th:errors="*{metodoPagamentoId}"></div>
+                        <p class="small texto-suave mt-2 mb-0">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Nao existe cobranca automatica: o pagamento e confirmado manualmente pela equipa
+                            apos verificacao do comprovativo.
+                        </p>
+                    </div>
+
+                    <div class="cartao-admin">
+                        <h2 class="h6 text-uppercase texto-suave mb-3">4. Notas (opcional)</h2>
+                        <label class="form-label" for="notas">Instrucoes para a entrega</label>
+                        <textarea class="form-control" id="notas" rows="3" th:field="*{notas}"
+                                  placeholder="Ex.: entregar no periodo da tarde"></textarea>
+                        <div class="invalid-feedback d-block" th:errors="*{notas}"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <aside class="resumo-compra">
+                        <h2 class="h5 mb-3">Resumo da encomenda</h2>
+                        <div class="d-flex justify-content-between small mb-2" th:each="item : ${carrinho.itens}">
+                            <span>
+                                <span th:text="${item.quantidade}">1</span>x
+                                <span th:text="${item.produto.nome}">Produto</span>
+                            </span>
+                            <span th:text="${@moeda.mt(item.subtotal)}">0,00 MT</span>
+                        </div>
+                        <hr>
+                        <div class="linha">
+                            <span>Subtotal</span>
+                            <span th:text="${@moeda.mt(carrinho.subtotal)}">0,00 MT</span>
+                        </div>
+                        <div class="linha">
+                            <span>Envio</span>
+                            <span th:text="${custoEnvio.signum() == 0} ? 'Gratis' : ${@moeda.mt(custoEnvio)}">0,00 MT</span>
+                        </div>
+                        <div class="linha total">
+                            <span>Total a pagar</span>
+                            <span th:text="${@moeda.mt(total)}">0,00 MT</span>
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-acento btn-lg" type="submit">
+                                <i class="bi bi-check2-circle me-2"></i>Confirmar encomenda
+                            </button>
+                        </div>
+                        <a class="btn btn-link w-100 mt-1" th:href="@{/carrinho}">Voltar ao carrinho</a>
+                        <p class="small texto-suave text-center mb-0">
+                            Ao confirmar, a encomenda e registada com um numero de referencia e o stock e reservado.
+                        </p>
+                    </aside>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

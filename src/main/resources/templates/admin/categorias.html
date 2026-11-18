@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/admin :: head('Categorias')}"></head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin :: sidebar('categorias')}"></aside>
+
+    <div class="admin-conteudo">
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="admin-topo">
+            <div>
+                <span class="eyebrow">Catalogo</span>
+                <h1>Categorias</h1>
+                <p class="texto-suave small mb-0">Organize o catalogo por tipo de produto.</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="cartao-admin">
+                    <h2 class="h6 text-uppercase texto-suave mb-3" id="tituloFormulario">Nova categoria</h2>
+                    <form th:action="@{/admin/categorias/guardar}" method="post" id="formCategoria">
+                        <input type="hidden" name="id" id="categoriaId">
+                        <div class="mb-3">
+                            <label class="form-label" for="nomeCategoria">Nome *</label>
+                            <input class="form-control" id="nomeCategoria" name="nome" required maxlength="80">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="descricaoCategoria">Descricao</label>
+                            <input class="form-control" id="descricaoCategoria" name="descricao" maxlength="255">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="ativoCategoria" name="ativo"
+                                   value="true" checked>
+                            <label class="form-check-label" for="ativoCategoria">Ativa na loja</label>
+                        </div>
+                        <button class="btn btn-acento w-100" type="submit">
+                            <i class="bi bi-check2 me-1"></i>Guardar categoria
+                        </button>
+                        <button class="btn btn-link w-100 mt-1" type="button" id="limparFormulario">Limpar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="cartao-admin">
+                    <div class="table-responsive">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Slug</th>
+                                <th>Descricao</th>
+                                <th>Estado</th>
+                                <th class="text-end">Accoes</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="c : ${categoriasAdmin}">
+                                <td class="fw-semibold" th:text="${c.nome}">Categoria</td>
+                                <td class="small texto-suave" th:text="${c.slug}">slug</td>
+                                <td class="small" th:text="${c.descricao}">Descricao</td>
+                                <td>
+                                    <span class="badge text-bg-success" th:if="${c.ativo}">Ativa</span>
+                                    <span class="badge text-bg-secondary" th:unless="${c.ativo}">Inativa</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <button class="btn btn-sm btn-contorno" type="button"
+                                                data-editar
+                                                th:attr="data-id=${c.id}, data-nome=${c.nome}, data-descricao=${c.descricao}, data-ativo=${c.ativo}"
+                                                title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <form th:action="@{/admin/categorias/{id}/ativar(id=${c.id})}" method="post">
+                                            <button class="btn btn-sm btn-contorno" type="submit"
+                                                    th:title="${c.ativo} ? 'Desativar' : 'Ativar'">
+                                                <i class="bi" th:classappend="${c.ativo} ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/admin :: scripts}"></div>
+<script>
+    document.querySelectorAll("[data-editar]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+            document.getElementById("categoriaId").value = botao.dataset.id;
+            document.getElementById("nomeCategoria").value = botao.dataset.nome;
+            document.getElementById("descricaoCategoria").value = botao.dataset.descricao || "";
+            document.getElementById("ativoCategoria").checked = botao.dataset.ativo === "true";
+            document.getElementById("tituloFormulario").textContent = "Editar categoria";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+    document.getElementById("limparFormulario").addEventListener("click", function () {
+        document.getElementById("formCategoria").reset();
+        document.getElementById("categoriaId").value = "";
+        document.getElementById("tituloFormulario").textContent = "Nova categoria";
+    });
+</script>
+</body>
+</html>

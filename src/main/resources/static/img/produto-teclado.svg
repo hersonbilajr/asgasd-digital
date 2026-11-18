@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Teclado mecanico">
+  <rect x="34" y="94" width="332" height="132" rx="14" fill="#0d2544" stroke="#2a4d78" stroke-width="2"/>
+  <g fill="#eaf1fa">
+    <rect x="54" y="114" width="30" height="24" rx="5"/><rect x="92" y="114" width="30" height="24" rx="5"/>
+    <rect x="130" y="114" width="30" height="24" rx="5"/><rect x="168" y="114" width="30" height="24" rx="5"/>
+    <rect x="206" y="114" width="30" height="24" rx="5"/><rect x="244" y="114" width="30" height="24" rx="5"/>
+    <rect x="282" y="114" width="30" height="24" rx="5"/><rect x="320" y="114" width="26" height="24" rx="5"/>
+    <rect x="54" y="148" width="38" height="24" rx="5"/><rect x="100" y="148" width="30" height="24" rx="5"/>
+    <rect x="138" y="148" width="30" height="24" rx="5"/><rect x="176" y="148" width="30" height="24" rx="5"/>
+    <rect x="214" y="148" width="30" height="24" rx="5"/><rect x="252" y="148" width="30" height="24" rx="5"/>
+    <rect x="290" y="148" width="56" height="24" rx="5"/>
+    <rect x="54" y="182" width="52" height="24" rx="5"/><rect x="114" y="182" width="172" height="24" rx="5" fill="#00d3a7"/>
+    <rect x="294" y="182" width="52" height="24" rx="5"/>
+  </g>
+</svg>

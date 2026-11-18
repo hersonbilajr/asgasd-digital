@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('Perfil')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/conta}">A minha conta</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Perfil</li>
+            </ol>
+        </nav>
+
+        <h1 class="h3 mb-4">Perfil e seguranca</h1>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <form class="cartao-form mb-4" th:action="@{/conta/perfil}" th:object="${perfil}" method="post" novalidate>
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Dados pessoais</h2>
+                    <div class="mb-3">
+                        <label class="form-label" for="nome">Nome completo</label>
+                        <input class="form-control" id="nome" th:field="*{nome}"
+                               th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{nome}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" type="email" id="email" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{email}"></div>
+                        <div class="form-text">O email e usado para entrar na conta e receber avisos de encomenda.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="telefone">Telefone</label>
+                        <input class="form-control" id="telefone" th:field="*{telefone}"
+                               th:classappend="${#fields.hasErrors('telefone')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{telefone}"></div>
+                    </div>
+                    <button class="btn btn-azul" type="submit"><i class="bi bi-check2 me-1"></i>Guardar dados</button>
+                </form>
+
+                <form class="cartao-form" th:action="@{/conta/senha}" th:object="${senhaForm}" method="post" novalidate>
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Alterar palavra-passe</h2>
+                    <div class="mb-3">
+                        <label class="form-label" for="senhaAtual">Palavra-passe atual</label>
+                        <input class="form-control" type="password" id="senhaAtual" th:field="*{senhaAtual}"
+                               autocomplete="current-password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="novaSenha">Nova palavra-passe</label>
+                        <input class="form-control" type="password" id="novaSenha" th:field="*{novaSenha}"
+                               autocomplete="new-password"
+                               th:classappend="${#fields.hasErrors('novaSenha')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{novaSenha}"></div>
+                        <div class="form-text">Minimo 8 caracteres. Use letras, numeros e simbolos.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="confirmarSenha">Repetir nova palavra-passe</label>
+                        <input class="form-control" type="password" id="confirmarSenha" th:field="*{confirmarSenha}"
+                               autocomplete="new-password"
+                               th:classappend="${#fields.hasErrors('confirmarSenha')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{confirmarSenha}"></div>
+                    </div>
+                    <button class="btn btn-azul" type="submit"><i class="bi bi-shield-lock me-1"></i>Alterar palavra-passe</button>
+                </form>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="cartao-admin mb-3">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Conta</h2>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="avatar-iniciais" style="width:52px;height:52px;font-size:1rem"
+                              th:text="${usuarioConta.iniciais}">AD</span>
+                        <div>
+                            <strong class="d-block" th:text="${usuarioConta.nome}">Nome</strong>
+                            <small class="texto-suave" th:text="${usuarioConta.email}">Email</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="small texto-suave mb-1">Conta criada em</p>
+                    <p class="small mb-0" th:text="${#temporals.format(usuarioConta.criadoEm, 'dd/MM/yyyy')}">--/--/----</p>
+                </div>
+
+                <div class="cartao-admin">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Seguranca</h2>
+                    <ul class="lista-beneficios mb-0">
+                        <li><i class="bi bi-check-circle"></i><span>Palavras-passe guardadas com BCrypt (nunca em texto simples).</span></li>
+                        <li><i class="bi bi-check-circle"></i><span>Sessao protegida contra fixacao de sessao e CSRF.</span></li>
+                        <li><i class="bi bi-check-circle"></i><span>Ligacao a base de dados por variaveis de ambiente.</span></li>
+                    </ul>
+                    <form th:action="@{/auth/logout}" method="post" class="mt-3">
+                        <button class="btn btn-outline-secondary btn-sm w-100" type="submit">
+                            <i class="bi bi-box-arrow-right me-1"></i>Terminar sessao
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/admin :: head('Configuracoes')}"></head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin :: sidebar('configuracoes')}"></aside>
+
+    <div class="admin-conteudo">
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="admin-topo">
+            <div>
+                <span class="eyebrow">Sistema</span>
+                <h1>Configuracoes da loja</h1>
+                <p class="texto-suave small mb-0">
+                    Estes valores sao usados no rodape, na pagina de contacto e no checkout.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-xl-6">
+                <form class="cartao-admin" th:action="@{/admin/configuracoes/contactos}" method="post">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Contactos e redes sociais</h2>
+                    <div class="mb-3">
+                        <label class="form-label" for="telefone">Telefone</label>
+                        <input class="form-control" id="telefone" name="cfg.contacto.telefone"
+                               th:value="${configAdmin['contacto.telefone']}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" type="email" id="email" name="cfg.contacto.email"
+                               th:value="${configAdmin['contacto.email']}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="endereco">Endereco</label>
+                        <input class="form-control" id="endereco" name="cfg.contacto.endereco"
+                               th:value="${configAdmin['contacto.endereco']}">
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="whatsapp">WhatsApp (com indicativo)</label>
+                            <input class="form-control" id="whatsapp" name="cfg.contacto.whatsapp"
+                                   placeholder="258840000000"
+                                   th:value="${configAdmin['contacto.whatsapp']}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="horario">Horario</label>
+                            <input class="form-control" id="horario" name="cfg.contacto.horario"
+                                   th:value="${configAdmin['contacto.horario']}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="facebook">Facebook</label>
+                            <input class="form-control" id="facebook" name="cfg.social.facebook"
+                                   th:value="${configAdmin['social.facebook']}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="instagram">Instagram</label>
+                            <input class="form-control" id="instagram" name="cfg.social.instagram"
+                                   th:value="${configAdmin['social.instagram']}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="linkedin">LinkedIn</label>
+                            <input class="form-control" id="linkedin" name="cfg.social.linkedin"
+                                   th:value="${configAdmin['social.linkedin']}">
+                        </div>
+                    </div>
+                    <button class="btn btn-acento mt-3" type="submit">
+                        <i class="bi bi-check2 me-1"></i>Guardar contactos
+                    </button>
+                </form>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="cartao-admin mb-4">
+                    <h2 class="h6 text-uppercase texto-suave mb-3">Metodos de pagamento</h2>
+                    <p class="small texto-suave">
+                        Nao existe integracao com um fornecedor de pagamentos: cada metodo apresenta
+                        instrucoes manuais e o administrador confirma o pagamento na encomenda.
+                    </p>
+
+                    <div class="table-responsive mb-3">
+                        <table class="table tabela-admin align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ordem</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="m : ${metodosAdmin}">
+                                <td>
+                                    <strong class="d-block" th:text="${m.nome}">Metodo</strong>
+                                    <small class="texto-suave" th:text="${m.descricao}">Descricao</small>
+                                </td>
+                                <td th:text="${m.ordem}">0</td>
+                                <td>
+                                    <span class="badge text-bg-success" th:if="${m.ativo}">Ativo</span>
+                                    <span class="badge text-bg-secondary" th:unless="${m.ativo}">Inativo</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <button class="btn btn-sm btn-contorno" type="button" data-editar-metodo
+                                                th:attr="data-id=${m.id}, data-nome=${m.nome}, data-descricao=${m.descricao}, data-instrucoes=${m.instrucoes}, data-ordem=${m.ordem}, data-ativo=${m.ativo}"
+                                                title="Editar"><i class="bi bi-pencil"></i></button>
+                                        <form th:action="@{/admin/configuracoes/pagamentos/{id}/ativar(id=${m.id})}"
+                                              method="post">
+                                            <button class="btn btn-sm btn-contorno" type="submit"
+                                                    th:title="${m.ativo} ? 'Desativar' : 'Ativar'">
+                                                <i class="bi" th:classappend="${m.ativo} ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <form class="cartao-admin" th:action="@{/admin/configuracoes/pagamentos}" th:object="${metodoPagamento}"
+                      method="post">
+                    <h2 class="h6 text-uppercase texto-suave mb-3" id="tituloMetodo">Novo metodo</h2>
+                    <input type="hidden" th:field="*{id}" id="metodoId">
+                    <div class="mb-3">
+                        <label class="form-label" for="metodoNome">Nome *</label>
+                        <input class="form-control" id="metodoNome" th:field="*{nome}" maxlength="80">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="metodoDescricao">Descricao</label>
+                        <input class="form-control" id="metodoDescricao" th:field="*{descricao}" maxlength="255">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="metodoInstrucoes">Instrucoes para o cliente</label>
+                        <textarea class="form-control" id="metodoInstrucoes" rows="4" th:field="*{instrucoes}"></textarea>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label" for="metodoOrdem">Ordem</label>
+                            <input class="form-control" type="number" min="0" id="metodoOrdem" th:field="*{ordem}">
+                        </div>
+                        <div class="col-6 d-flex align-items-end">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="metodoAtivo" th:field="*{ativo}">
+                                <label class="form-check-label" for="metodoAtivo">Ativo</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-azul mt-3" type="submit">
+                        <i class="bi bi-check2 me-1"></i>Guardar metodo
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/admin :: scripts}"></div>
+<script>
+    document.querySelectorAll("[data-editar-metodo]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+            document.getElementById("metodoId").value = botao.dataset.id;
+            document.getElementById("metodoNome").value = botao.dataset.nome;
+            document.getElementById("metodoDescricao").value = botao.dataset.descricao || "";
+            document.getElementById("metodoInstrucoes").value = botao.dataset.instrucoes || "";
+            document.getElementById("metodoOrdem").value = botao.dataset.ordem;
+            document.getElementById("metodoAtivo").checked = botao.dataset.ativo === "true";
+            document.getElementById("tituloMetodo").textContent = "Editar metodo";
+            document.getElementById("metodoNome").scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+    });
+</script>
+</body>
+</html>

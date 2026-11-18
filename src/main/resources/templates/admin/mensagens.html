@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/admin :: head('Mensagens')}"></head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin :: sidebar('mensagens')}"></aside>
+
+    <div class="admin-conteudo">
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="admin-topo">
+            <div>
+                <span class="eyebrow">Atendimento</span>
+                <h1>Mensagens de contacto</h1>
+                <p class="texto-suave small mb-0">Pedidos enviados pelo formulario publico.</p>
+            </div>
+        </div>
+
+        <div class="vazio-estado" th:if="${#lists.isEmpty(mensagens)}">
+            <i class="bi bi-chat-left-text"></i>
+            Ainda nao existem mensagens.
+        </div>
+
+        <div class="row g-3" th:if="${!#lists.isEmpty(mensagens)}">
+            <div class="col-xl-6" th:each="m : ${mensagens}">
+                <div class="cartao-admin h-100" th:classappend="${m.lida} ? '' : 'border-start border-4 border-success'">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                        <div>
+                            <strong class="d-block" th:text="${m.nome}">Nome</strong>
+                            <small class="texto-suave" th:text="${m.email}">Email</small>
+                        </div>
+                        <span class="badge text-bg-secondary" th:if="${m.lida}">Lida</span>
+                        <span class="badge text-bg-success" th:unless="${m.lida}">Nova</span>
+                    </div>
+
+                    <p class="small mb-1">
+                        <strong th:text="${m.assunto}">Assunto</strong>
+                        <span class="texto-suave" th:if="${m.telefone}">
+                            &middot; <span th:text="${m.telefone}"></span>
+                        </span>
+                    </p>
+                    <p class="small texto-suave" style="white-space: pre-line" th:text="${m.mensagem}">Mensagem</p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="texto-suave"
+                               th:text="${#temporals.format(m.criadoEm, 'dd/MM/yyyy HH:mm')}">Data</small>
+                        <div class="d-flex gap-1">
+                            <a class="btn btn-sm btn-contorno" th:href="'mailto:' + ${m.email}">
+                                <i class="bi bi-reply"></i> Responder
+                            </a>
+                            <form th:action="@{/admin/mensagens/{id}/lida(id=${m.id})}" method="post">
+                                <button class="btn btn-sm btn-contorno" type="submit"
+                                        th:text="${m.lida} ? 'Marcar como nova' : 'Marcar como lida'">
+                                    Marcar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/admin :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/layout :: head('Recuperar palavra-passe')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="auth-wrapper">
+    <div class="container">
+        <div class="cartao-form">
+            <div class="text-center mb-4">
+                <img th:src="@{/img/logo-mark.svg}" alt="Asgasd Digital" width="56" height="56" class="mb-2">
+                <h1 class="h4 mb-1">Recuperar palavra-passe</h1>
+                <p class="texto-suave small mb-0">
+                    Indique o email da conta. Enviamos um link valido durante 2 horas.
+                </p>
+            </div>
+
+            <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}">Pedido enviado.</div>
+            <div class="alert alert-danger" th:if="${erro}" th:text="${erro}">Erro.</div>
+
+            <div class="aviso-demo mb-3" th:if="${linkRecuperacao}">
+                <strong>Ambiente de demonstracao (sem SMTP configurado):</strong><br>
+                Use este link para redefinir a palavra-passe:
+                <a th:href="${linkRecuperacao}" th:text="${linkRecuperacao}">link</a>
+            </div>
+
+            <form th:action="@{/auth/recuperar}" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="email">Email da conta</label>
+                    <input class="form-control" type="email" id="email" name="email" required autofocus
+                           placeholder="o.seu.email@exemplo.co.mz">
+                </div>
+                <button class="btn btn-azul w-100" type="submit">
+                    <i class="bi bi-envelope-arrow-up me-1"></i>Enviar instrucoes
+                </button>
+            </form>
+
+            <p class="text-center small texto-suave mt-3 mb-0">
+                <a class="texto-acento fw-semibold" th:href="@{/auth/login}">&larr; Voltar ao login</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

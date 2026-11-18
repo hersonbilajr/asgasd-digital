@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Lampada inteligente">
+  <circle cx="200" cy="128" r="58" fill="#0d2544" stroke="#2a4d78" stroke-width="2"/>
+  <path d="M176 176c0-16-18-26-18-48a42 42 0 0 1 84 0c0 22-18 32-18 48h-48Z" fill="#17406e"/>
+  <path d="M180 150c0-12-12-20-12-32" stroke="#00d3a7" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <rect x="174" y="182" width="52" height="14" rx="5" fill="#cfe0f5"/>
+  <rect x="178" y="198" width="44" height="12" rx="4" fill="#cfe0f5"/>
+  <rect x="184" y="212" width="32" height="10" rx="4" fill="#cfe0f5"/>
+  <path d="M292 96l12 12M304 84v18M316 96l-12 12" stroke="#00d3a7" stroke-width="4" stroke-linecap="round"/>
+  <path d="M100 132l-12 12M88 132h-18M100 120l-12-12" stroke="#5b8def" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Produto">
+  <rect x="110" y="80" width="180" height="150" rx="16" fill="#eaf1fa" stroke="#cfe0f5" stroke-width="2"/>
+  <path d="M156 190l38-58 26 38 18-24 22 44H156Z" fill="#cfe0f5"/>
+  <circle cx="170" cy="116" r="12" fill="#cfe0f5"/>
+</svg>

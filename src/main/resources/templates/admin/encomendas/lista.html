@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:replace="~{fragments/admin :: head('Encomendas')}"></head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin :: sidebar('encomendas')}"></aside>
+
+    <div class="admin-conteudo">
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="admin-topo">
+            <div>
+                <span class="eyebrow">Vendas</span>
+                <h1>Encomendas</h1>
+                <p class="texto-suave small mb-0">
+                    <span th:text="${pagina.totalElements}">0</span> encomenda(s)
+                </p>
+            </div>
+            <form class="d-flex gap-2" method="get" th:action="@{/admin/encomendas}">
+                <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
+                    <option value="">Todos os estados</option>
+                    <option th:each="e : ${estados}" th:value="${e}" th:text="${e.descricao}"
+                            th:selected="${statusSelecionado == e}">Estado</option>
+                </select>
+                <noscript><button class="btn btn-sm btn-azul" type="submit">Filtrar</button></noscript>
+            </form>
+        </div>
+
+        <div class="cartao-admin">
+            <div class="vazio-estado" th:if="${pagina.empty}">
+                <i class="bi bi-inbox"></i>
+                Nenhuma encomenda para os filtros escolhidos.
+            </div>
+
+            <div class="table-responsive" th:if="${!pagina.empty}">
+                <table class="table tabela-admin align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Referencia</th>
+                        <th>Cliente</th>
+                        <th>Contacto</th>
+                        <th>Data</th>
+                        <th>Estado</th>
+                        <th>Pagamento</th>
+                        <th class="text-end">Total</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="e : ${pagina.content}">
+                        <td class="fw-semibold" th:text="${e.referencia}">ASG</td>
+                        <td th:text="${e.nomeContacto}">Cliente</td>
+                        <td class="small" th:text="${e.telefoneContacto}">Telefone</td>
+                        <td class="small" th:text="${#temporals.format(e.criadoEm, 'dd/MM/yyyy HH:mm')}">Data</td>
+                        <td>
+                            <span class="badge-estado"
+                                  th:classappend="'text-bg-' + ${e.status.corBootstrap}"
+                                  th:text="${e.status.descricao}">Estado</span>
+                        </td>
+                        <td>
+                            <span class="badge-estado"
+                                  th:classappend="'text-bg-' + ${e.pagamento != null ? e.pagamento.status.corBootstrap : 'secondary'}"
+                                  th:text="${e.pagamento != null ? e.pagamento.status.descricao : '-'}">Pagamento</span>
+                        </td>
+                        <td class="text-end" th:text="${@moeda.mt(e.total)}">0,00 MT</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-contorno"
+                               th:href="@{/admin/encomendas/{id}(id=${e.id})}">Abrir</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <nav class="mt-3" th:if="${totalPaginas > 1}">
+                <ul class="pagination paginacao justify-content-center mb-0">
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPaginas - 1)}"
+                        th:classappend="${i == paginaAtual} ? 'active'">
+                        <a class="page-link" th:text="${i + 1}"
+                           th:href="@{/admin/encomendas(pagina=${i}, status=${statusSelecionado})}">1</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/admin :: scripts}"></div>
+</body>
+</html>

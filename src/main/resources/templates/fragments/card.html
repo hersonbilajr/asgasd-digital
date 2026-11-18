@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<body>
+
+<div th:fragment="card(produto)" class="produto-card entrada">
+    <a class="produto-imagem" th:href="@{/produto/{slug}(slug=${produto.slug})}" th:aria-label="${produto.nome}">
+        <div class="produto-etiquetas">
+            <span class="etiqueta etiqueta-promo" th:if="${produto.emPromocao}"
+                  th:text="|-${produto.descontoPercentual}%|">-10%</span>
+            <span class="etiqueta etiqueta-destaque" th:if="${produto.destaque}">Destaque</span>
+            <span class="etiqueta etiqueta-esgota" th:if="${produto.stock == 0}">Esgotado</span>
+        </div>
+        <img th:src="@{${produto.imagemOuPadrao}}" th:alt="${produto.nome}" loading="lazy">
+    </a>
+    <div class="produto-corpo">
+        <span class="produto-categoria"
+              th:text="${produto.categoria != null} ? ${produto.categoria.nome} : 'Geral'">Categoria</span>
+        <h3 class="produto-nome">
+            <a th:href="@{/produto/{slug}(slug=${produto.slug})}" th:text="${produto.nome}">Nome do produto</a>
+        </h3>
+        <p class="small texto-suave mb-0" th:if="${produto.descricaoCurta}"
+           th:text="${produto.descricaoCurta}">Descricao curta</p>
+
+        <div class="produto-precos">
+            <span class="preco-atual" th:text="${@moeda.mt(produto.precoVenda)}">0,00 MT</span>
+            <span class="preco-antigo" th:if="${produto.emPromocao}" th:text="${@moeda.mt(produto.preco)}">0,00 MT</span>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-1">
+            <span class="stock-indicador"
+                  th:classappend="${produto.stock == 0} ? 'stock-esgotado' : (${produto.stock <= 5} ? 'stock-baixo' : 'stock-ok')">
+                <i class="bi bi-circle-fill" style="font-size:.45rem;vertical-align:middle"></i>
+                <span th:text="${produto.stock == 0} ? 'Sem stock' : (${produto.stock <= 5} ? |Ultimas ${produto.stock} unid.| : 'Em stock')">Em stock</span>
+            </span>
+        </div>
+
+        <form th:action="@{/carrinho/adicionar}" method="post" class="mt-2">
+            <input type="hidden" name="produtoId" th:value="${produto.id}">
+            <input type="hidden" name="quantidade" value="1">
+            <button type="submit" class="btn btn-azul btn-sm w-100" th:disabled="${produto.stock == 0}">
+                <i class="bi bi-cart-plus me-1"></i>
+                <span th:text="${produto.stock == 0} ? 'Indisponivel' : 'Adicionar ao carrinho'">Adicionar</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

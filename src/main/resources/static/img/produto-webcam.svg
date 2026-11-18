@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Webcam">
+  <circle cx="200" cy="126" r="66" fill="#0d2544" stroke="#2a4d78" stroke-width="2"/>
+  <circle cx="200" cy="126" r="44" fill="#123a63"/>
+  <circle cx="200" cy="126" r="24" fill="#071528"/>
+  <circle cx="192" cy="118" r="8" fill="#5b8def" opacity=".8"/>
+  <circle cx="240" cy="86" r="7" fill="#00d3a7"/>
+  <rect x="182" y="188" width="36" height="26" fill="#17406e"/>
+  <rect x="146" y="214" width="108" height="16" rx="8" fill="#0d2544"/>
+  <path d="M120 244h160" stroke="#cfe0f5" stroke-width="6" stroke-linecap="round"/>
+</svg>

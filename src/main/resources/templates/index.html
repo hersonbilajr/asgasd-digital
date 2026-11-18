@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="pt">
+<head th:replace="~{fragments/layout :: head('Tecnologia para o dia a dia')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div th:replace="~{fragments/layout :: alertas}"></div>
+
+<main>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <span class="selo mb-3"><i class="bi bi-lightning-charge-fill"></i> Loja oficial Asgasd Digital</span>
+                    <h1 class="mb-3">Tecnologia que acompanha<br>o seu dia a dia.</h1>
+                    <p class="lead mb-4">
+                        Informatica, telemoveis, audio e casa inteligente selecionados pela Asgasd Digital.
+                        Precos em meticais, stock atualizado e apoio local antes e depois da compra.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-acento btn-lg" th:href="@{/produtos}">
+                            <i class="bi bi-grid me-2"></i>Explorar catalogo
+                        </a>
+                        <a class="btn btn-claro btn-lg" th:href="@{/contacto}">
+                            <i class="bi bi-whatsapp me-2"></i>Falar com a equipa
+                        </a>
+                    </div>
+                    <div class="hero-metricas">
+                        <div><strong>+150</strong><span>produtos no catalogo</span></div>
+                        <div><strong>24h</strong><span>resposta media</span></div>
+                        <div><strong>100%</strong><span>stock verificado</span></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img class="hero-ilustracao img-fluid" th:src="@{/img/hero.svg}"
+                         alt="Ilustracao da loja digital Asgasd">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categorias -->
+    <section class="seccao">
+        <div class="container">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="eyebrow">Explorar</span>
+                    <h2>Categorias de produtos</h2>
+                </div>
+                <a class="btn btn-contorno" th:href="@{/produtos}">Ver tudo <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-4 col-xl" th:each="categoria : ${categoriasVitrine}"
+                     th:with="icones=${ {'informatica':'bi-laptop','telemoveis-e-tablets':'bi-phone','audio':'bi-headphones','acessorios':'bi-mouse','casa-inteligente':'bi-house-gear'} }">
+                    <a class="categoria-tile" th:href="@{/produtos(categoriaId=${categoria.id})}">
+                        <span class="icone"><i class="bi" th:classappend="${icones[categoria.slug] != null} ? ${icones[categoria.slug]} : 'bi-grid'"></i></span>
+                        <span>
+                            <strong th:text="${categoria.nome}">Informatica</strong>
+                            <small th:text="${categoria.descricao}">Descricao</small>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destaques -->
+    <section class="seccao seccao-clara" th:if="${!#lists.isEmpty(destaques)}">
+        <div class="container">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="eyebrow">Selecao da equipa</span>
+                    <h2>Produtos em destaque</h2>
+                </div>
+                <a class="btn btn-contorno" th:href="@{/produtos}">Todo o catalogo <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+            <div class="row g-4">
+                <div class="col-6 col-lg-3" th:each="produto : ${destaques}">
+                    <div th:replace="~{fragments/card :: card(${produto})}"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promocoes -->
+    <section class="seccao" th:if="${!#lists.isEmpty(promocoes)}">
+        <div class="container">
+            <div class="faixa-promo mb-4">
+                <div class="row align-items-center g-4 position-relative">
+                    <div class="col-lg-7">
+                        <span class="eyebrow text-white-50">Promocoes da semana</span>
+                        <h2 class="mb-2">Poupanca real em tecnologia selecionada</h2>
+                        <p class="mb-3 text-white-50">
+                            Precos promocionais por tempo limitado. O valor apresentado ja inclui o desconto
+                            e e o valor cobrado no checkout.
+                        </p>
+                        <a class="btn btn-acento" th:href="@{/produtos(ordenar='preco-asc')}">
+                            Aproveitar promocoes
+                        </a>
+                    </div>
+                    <div class="col-lg-5 text-lg-end">
+                        <i class="bi bi-tags" style="font-size: 6rem; color: rgba(255,255,255,.18)"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-6 col-lg-3" th:each="produto : ${promocoes}">
+                    <div th:replace="~{fragments/card :: card(${produto})}"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mais vendidos -->
+    <section class="seccao seccao-clara">
+        <div class="container">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="eyebrow">Preferidos dos clientes</span>
+                    <h2>Produtos mais vendidos</h2>
+                    <p class="texto-suave mb-0 small">
+                        Ranking calculado a partir das encomendas registadas na loja.
+                    </p>
+                </div>
+                <a class="btn btn-contorno" th:href="@{/produtos}">Ver catalogo</a>
+            </div>
+            <div class="row g-4">
+                <div class="col-6 col-lg-3" th:each="produto : ${maisVendidos}">
+                    <div th:replace="~{fragments/card :: card(${produto})}"></div>
+                </div>
+            </div>
+            <div class="vazio-estado mt-3" th:if="${#lists.isEmpty(maisVendidos)}">
+                <i class="bi bi-graph-up"></i>
+                Ainda nao existem vendas registadas. Os produtos mais vendidos aparecem aqui
+                assim que as primeiras encomendas forem concluidas.
+            </div>
+        </div>
+    </section>
+
+    <!-- Beneficios -->
+    <section class="seccao">
+        <div class="container">
+            <div class="text-center mb-4">
+                <span class="eyebrow">Porque comprar na Asgasd Digital</span>
+                <h2>Uma compra simples e acompanhada</h2>
+            </div>
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="beneficio">
+                        <div class="icone"><i class="bi bi-truck"></i></div>
+                        <h3>Entrega acompanhada</h3>
+                        <p>Envio para Maputo e provincias, com referencia de encomenda para consultar o estado.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="beneficio">
+                        <div class="icone"><i class="bi bi-shield-check"></i></div>
+                        <h3>Garantia e apoio</h3>
+                        <p>Produtos com garantia do fabricante e suporte tecnico da equipa Asgasd.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="beneficio">
+                        <div class="icone"><i class="bi bi-cash-coin"></i></div>
+                        <h3>Pagamento flexivel</h3>
+                        <p>Transferencia, pagamento movel ou pagamento na entrega, confirmados manualmente.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="beneficio">
+                        <div class="icone"><i class="bi bi-chat-dots"></i></div>
+                        <h3>Apoio antes da compra</h3>
+                        <p>Duvidas sobre especificacoes? Fale com a equipa por WhatsApp ou email.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testemunhos -->
+    <section class="seccao seccao-clara">
+        <div class="container">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="eyebrow">Testemunhos</span>
+                    <h2>O que dizem os clientes</h2>
+                </div>
+                <span class="aviso-demo"><i class="bi bi-info-circle me-1"></i>Exemplos demonstrativos</span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4" th:each="t : ${testemunhos}">
+                    <div class="testemunho">
+                        <div class="estrelas">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                        </div>
+                        <p th:text="|&ldquo;${t.texto}&rdquo;|">Texto</p>
+                        <div class="autor">
+                            <span class="avatar-iniciais"
+                                  th:text="${#strings.substring(t.nome,0,1)}">A</span>
+                            <div>
+                                <strong class="d-block" th:text="${t.nome}">Nome</strong>
+                                <small class="texto-suave" th:text="${t.cidade}">Cidade</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="seccao pt-0">
+        <div class="container">
+            <div class="faixa-promo">
+                <div class="row align-items-center g-3 position-relative">
+                    <div class="col-lg-8">
+                        <h2 class="mb-1">Precisa de ajuda a escolher?</h2>
+                        <p class="text-white-50 mb-0">
+                            A equipa Asgasd Digital responde por WhatsApp, email ou telefone
+                            e ajuda a comparar especificacoes antes da compra.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a class="btn btn-acento" th:href="${whatsappLink}" target="_blank" rel="noopener">
+                            <i class="bi bi-whatsapp me-2"></i>Falar por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<button th:replace="~{fragments/layout :: topo}"></button>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

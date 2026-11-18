@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: asgasd-digital
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        value: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: asgasd-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: asgasd-db
+          property: password
+      - key: APP_BASE_URL
+        sync: false
+      - key: SEED_DEMO
+        value: "true"
+      - key: ADMIN_EMAIL
+        value: admin@asgasd.co.mz
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: CLIENTE_PASSWORD
+        generateValue: true
+      - key: DB_HOST
+        fromDatabase:
+          name: asgasd-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: asgasd-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: asgasd-db
+          property: database
+
+databases:
+  - name: asgasd-db
+    databaseName: asgasd
+    user: asgasd
+    plan: basic-256mb

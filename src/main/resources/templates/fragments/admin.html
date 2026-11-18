@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' | Administracao Asgasd'">Administracao</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.svg}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<aside th:fragment="sidebar(ativo)" class="admin-sidebar">
+    <a class="marca-asgasd" th:href="@{/admin}">
+        <img th:src="@{/img/logo-mark.svg}" alt="Asgasd Digital" width="34" height="34">
+        <span>asgasd<span class="ponto">.</span>digital</span>
+    </a>
+
+    <div class="rotulo">Gestao</div>
+    <nav class="nav flex-column">
+        <a class="nav-link" th:href="@{/admin}" th:classappend="${ativo == 'painel'} ? 'active'">
+            <i class="bi bi-speedometer2"></i> Painel
+        </a>
+        <a class="nav-link" th:href="@{/admin/produtos}" th:classappend="${ativo == 'produtos'} ? 'active'">
+            <i class="bi bi-box-seam"></i> Produtos
+        </a>
+        <a class="nav-link" th:href="@{/admin/categorias}" th:classappend="${ativo == 'categorias'} ? 'active'">
+            <i class="bi bi-tags"></i> Categorias
+        </a>
+        <a class="nav-link" th:href="@{/admin/encomendas}" th:classappend="${ativo == 'encomendas'} ? 'active'">
+            <i class="bi bi-receipt"></i> Encomendas
+        </a>
+        <a class="nav-link" th:href="@{/admin/clientes}" th:classappend="${ativo == 'clientes'} ? 'active'">
+            <i class="bi bi-people"></i> Clientes
+        </a>
+        <a class="nav-link" th:href="@{/admin/mensagens}" th:classappend="${ativo == 'mensagens'} ? 'active'">
+            <i class="bi bi-chat-left-text"></i> Mensagens
+            <span class="badge text-bg-danger ms-auto" th:if="${mensagensNaoLidas > 0}"
+                  th:text="${mensagensNaoLidas}">0</span>
+        </a>
+        <a class="nav-link" th:href="@{/admin/configuracoes}" th:classappend="${ativo == 'configuracoes'} ? 'active'">
+            <i class="bi bi-gear"></i> Configuracoes
+        </a>
+    </nav>
+
+    <div class="rotulo">Loja</div>
+    <nav class="nav flex-column">
+        <a class="nav-link" th:href="@{/}"><i class="bi bi-shop"></i> Ver loja</a>
+        <form th:action="@{/auth/logout}" method="post">
+            <button class="nav-link btn btn-link w-100 text-start" type="submit">
+                <i class="bi bi-box-arrow-right"></i> Terminar sessao
+            </button>
+        </form>
+    </nav>
+
+    <div class="mt-4 px-2 small" style="color: rgba(255,255,255,.4)">
+        <div th:if="${usuarioLogado != null}">
+            <span th:text="${usuarioLogado.nome}">Admin</span><br>
+            <span th:text="${usuarioLogado.email}">email</span>
+        </div>
+    </div>
+</aside>
+
+<div th:fragment="scripts">
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/app.js}"></script>
+</div>
+
+</body>
+</html>

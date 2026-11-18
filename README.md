@@ -90,7 +90,7 @@ cp .env.example .env
 
 | Variável | Descrição | Obrigatória |
 |---|---|---|
-| `DATABASE_URL` | URL JDBC, ex. `jdbc:postgresql://localhost:5432/asgasd` | sim |
+| `DATABASE_URL` | URL JDBC (`jdbc:postgresql://…`) **ou** URI `postgres://utilizador:password@host/base`, convertida automaticamente | sim |
 | `DATABASE_USERNAME` / `DATABASE_PASSWORD` | Credenciais da base de dados | sim |
 | `PORT` | Porta HTTP (predefinido 8080) | não |
 | `APP_BASE_URL` | URL pública usada nos links de email | recomendada |
@@ -184,12 +184,16 @@ O contentor corre como utilizador não-root e expõe `PORT` (predefinido 8080).
 ## 9. Deploy
 
 ### Render (Blueprint)
-`render.yaml` descreve o serviço web (Docker) e uma base PostgreSQL, injetando `DATABASE_URL` no formato JDBC a partir das propriedades da base de dados. Depois do primeiro deploy, defina `ADMIN_PASSWORD` e `CLIENTE_PASSWORD` como segredos no painel.
+`render.yaml` descreve o serviço web (Docker) e uma base PostgreSQL. O Render injeta `DATABASE_URL` como URI `postgres://…` (`fromDatabase: connectionString`) e a aplicação converte-a para JDBC no arranque — não é preciso montar a URL à mão.
 
-### Neon + qualquer host de contentores
-1. Crie um projeto no Neon e copie a connection string (`postgresql://...`).
-2. Converta para JDBC: `jdbc:postgresql://<host>/<db>?sslmode=require`.
-3. Defina `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`, `APP_BASE_URL` e `SPRING_PROFILES_ACTIVE=prod`.
+1. No Render: **New → Blueprint** e escolha o repositório `hersonbilajr/asgasd-digital`.
+2. Preencha `APP_BASE_URL` com o URL do serviço (ex. `https://asgasd-digital.onrender.com`).
+3. `ADMIN_PASSWORD` e `CLIENTE_PASSWORD` são gerados automaticamente; veja-os em **Environment** e altere-os depois do primeiro login.
+
+### Neon (PostgreSQL gratuito) + qualquer host de contentores
+1. Crie um projeto no Neon e copie a connection string (`postgresql://…?sslmode=require`).
+2. Defina `DATABASE_URL` com essa URI tal como está — é convertida automaticamente.
+3. Defina também `APP_BASE_URL` e `SPRING_PROFILES_ACTIVE=prod`.
 
 ### Servidor próprio
 `java -jar target/asgasd-digital.jar --spring.profiles.active=prod` atrás de um reverse proxy com HTTPS (`server.forward-headers-strategy=framework` já está ativo).

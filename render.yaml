@@ -8,16 +8,11 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+      # Render fornece a URI postgres:// completa; a aplicacao converte-a para JDBC no arranque.
       - key: DATABASE_URL
-        value: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-      - key: DATABASE_USERNAME
         fromDatabase:
           name: asgasd-db
-          property: user
-      - key: DATABASE_PASSWORD
-        fromDatabase:
-          name: asgasd-db
-          property: password
+          property: connectionString
       - key: APP_BASE_URL
         sync: false
       - key: SEED_DEMO
@@ -28,18 +23,6 @@ services:
         generateValue: true
       - key: CLIENTE_PASSWORD
         generateValue: true
-      - key: DB_HOST
-        fromDatabase:
-          name: asgasd-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: asgasd-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: asgasd-db
-          property: database
 
 databases:
   - name: asgasd-db

@@ -13,9 +13,13 @@ services:
         fromDatabase:
           name: asgasd-db
           property: connectionString
-      # URL publica do servico. Se o Render atribuir outro subdominio, actualizar em Environment.
+      # O Render so atribui o subdominio no primeiro sync, por isso nunca se fixa a URL:
+      # APP_BASE_URL recebe o RENDER_EXTERNAL_URL real (segue renomeacoes e dominios proprios).
       - key: APP_BASE_URL
-        value: https://asgasd-digital.onrender.com
+        fromService:
+          name: asgasd-digital
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
       - key: SEED_DEMO
         value: "true"
       - key: ADMIN_EMAIL

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" role="img" aria-label="Loja digital Asgasd">
+  <defs>
+    <linearGradient id="ecra" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f3358"/><stop offset="1" stop-color="#0a1c33"/>
+    </linearGradient>
+    <linearGradient id="acento" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00d3a7"/><stop offset="1" stop-color="#5b8def"/>
+    </linearGradient>
+  </defs>
+  <rect x="60" y="60" width="380" height="250" rx="18" fill="url(#ecra)" stroke="#2a4d78"/>
+  <rect x="60" y="60" width="380" height="34" rx="18" fill="#0c2440"/>
+  <circle cx="84" cy="77" r="5" fill="#ff5a5f"/><circle cx="102" cy="77" r="5" fill="#f5c04a"/><circle cx="120" cy="77" r="5" fill="#00d3a7"/>
+  <rect x="86" y="118" width="130" height="12" rx="6" fill="#00d3a7" opacity=".85"/>
+  <rect x="86" y="142" width="190" height="8" rx="4" fill="#5b8def" opacity=".55"/>
+  <rect x="86" y="158" width="150" height="8" rx="4" fill="#5b8def" opacity=".35"/>
+  <rect x="86" y="188" width="96" height="86" rx="12" fill="#123a63" stroke="#25507f"/>
+  <rect x="196" y="188" width="96" height="86" rx="12" fill="#123a63" stroke="#25507f"/>
+  <rect x="306" y="188" width="96" height="86" rx="12" fill="#123a63" stroke="#25507f"/>
+  <rect x="98" y="206" width="72" height="8" rx="4" fill="url(#acento)"/>
+  <rect x="208" y="206" width="72" height="8" rx="4" fill="url(#acento)"/>
+  <rect x="318" y="206" width="72" height="8" rx="4" fill="url(#acento)"/>
+  <rect x="98" y="226" width="48" height="7" rx="3.5" fill="#5b8def" opacity=".6"/>
+  <rect x="208" y="226" width="48" height="7" rx="3.5" fill="#5b8def" opacity=".6"/>
+  <rect x="318" y="226" width="48" height="7" rx="3.5" fill="#5b8def" opacity=".6"/>
+  <rect x="98" y="248" width="34" height="14" rx="7" fill="#00d3a7" opacity=".9"/>
+  <rect x="208" y="248" width="34" height="14" rx="7" fill="#00d3a7" opacity=".9"/>
+  <rect x="318" y="248" width="34" height="14" rx="7" fill="#00d3a7" opacity=".9"/>
+  <path d="M150 310h200l22 34H128l22-34Z" fill="#123a63" stroke="#2a4d78"/>
+  <rect x="196" y="348" width="108" height="10" rx="5" fill="#0c2440"/>
+  <g transform="translate(392 300)">
+    <circle cx="0" cy="0" r="54" fill="#00d3a7" opacity=".16"/>
+    <path d="M-18 10V-4a18 18 0 0 1 36 0v14" stroke="#00d3a7" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <rect x="-22" y="6" width="12" height="20" rx="6" fill="#00d3a7"/>
+    <rect x="10" y="6" width="12" height="20" rx="6" fill="#00d3a7"/>
+  </g>
+  <g transform="translate(96 330)">
+    <circle cx="0" cy="0" r="40" fill="#5b8def" opacity=".16"/>
+    <path d="M-16 8-4-14h8L16 8h-6l-2-4h-8l-2 4h-6Zm8-9h4l-2-5-2 5Z" fill="#9dc0ff"/>
+  </g>
+</svg>

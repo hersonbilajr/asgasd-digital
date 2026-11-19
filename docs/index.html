@@ -39,17 +39,15 @@
         min-height: 100vh;
     }
 
-    a { color: var(--acento-escuro); }
+    .container {
+        width: min(1080px, calc(100% - 40px));
+        margin: 0 auto;
+    }
 
     .topo {
         background: linear-gradient(135deg, var(--azul-noite) 0%, var(--azul-medio) 100%);
         color: #eaf2fb;
         padding: 22px 0;
-    }
-
-    .container {
-        width: min(1080px, calc(100% - 40px));
-        margin: 0 auto;
     }
 
     .marca {
@@ -72,8 +70,17 @@
     .hero {
         background: linear-gradient(135deg, var(--azul-noite) 0%, var(--azul-medio) 100%);
         color: #eaf2fb;
-        padding: 8px 0 74px;
+        padding: 12px 0 78px;
     }
+
+    .hero-grade {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 40px;
+        align-items: center;
+    }
+
+    .hero-ilustracao { display: none; }
 
     .etiqueta {
         display: inline-flex;
@@ -101,11 +108,11 @@
 
     h1 {
         font-family: var(--titulos);
-        font-size: clamp(2rem, 4.6vw, 3.1rem);
-        line-height: 1.14;
+        font-size: clamp(2rem, 4.2vw, 3rem);
+        line-height: 1.15;
         letter-spacing: -.02em;
         margin: 22px 0 16px;
-        max-width: 21ch;
+        max-width: 20ch;
     }
 
     h1 span { color: var(--acento); }
@@ -113,7 +120,7 @@
     .hero p {
         font-size: 1.06rem;
         color: #b9cbe0;
-        max-width: 58ch;
+        max-width: 52ch;
         margin: 0;
     }
 
@@ -149,8 +156,9 @@
         place-items: center;
         background: rgba(0, 211, 167, .12);
         color: var(--acento-escuro);
-        font-size: 1.15rem;
     }
+
+    .icone svg { display: block; }
 
     .contacto {
         margin: 46px 0 64px;
@@ -177,6 +185,7 @@
         font-size: .95rem;
         padding: 12px 22px;
         border-radius: 12px;
+        overflow-wrap: anywhere;
     }
 
     .botao:hover { background: var(--azul-medio); }
@@ -194,6 +203,26 @@
         gap: 8px 18px;
         justify-content: space-between;
     }
+
+    @media (min-width: 980px) {
+        .hero { padding: 24px 0 96px; }
+        .hero-grade { grid-template-columns: minmax(0, 1fr) 420px; gap: 56px; }
+        .hero-ilustracao {
+            display: block;
+            width: 100%;
+            max-width: 420px;
+            height: auto;
+            justify-self: end;
+        }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .hero-ilustracao { animation: flutuar 7s ease-in-out infinite; }
+        @keyframes flutuar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+    }
 </style>
 </head>
 <body>
@@ -208,30 +237,54 @@
 
 <main>
     <section class="hero">
-        <div class="container">
-            <span class="etiqueta">Em activação</span>
-            <h1>A loja online está <span>em preparação</span>.</h1>
-            <p>
-                Estamos a terminar a montagem da loja: catálogo, carrinho, encomendas com referência
-                e apoio ao cliente. Entretanto, os contactos de vendas continuam abertos.
-            </p>
+        <div class="container hero-grade">
+            <div class="hero-texto">
+                <span class="etiqueta">Em activação</span>
+                <h1>A loja online está <span>em&nbsp;preparação</span>.</h1>
+                <p>
+                    Estamos a terminar a montagem da loja: catálogo, carrinho, encomendas com referência
+                    e apoio ao cliente. Entretanto, os contactos de vendas continuam abertos.
+                </p>
+            </div>
+            <img class="hero-ilustracao" src="assets/hero.svg" alt="" width="520" height="420" aria-hidden="true">
         </div>
     </section>
 
     <div class="container">
         <section class="cartoes">
             <article class="cartao">
-                <div class="icone" aria-hidden="true">&#128421;</div>
+                <div class="icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2.5" y="4" width="19" height="12.5" rx="2"/>
+                        <path d="M8.5 20.5h7M12 16.5v4"/>
+                    </svg>
+                </div>
                 <h2>Informática e telemóveis</h2>
                 <p>Portáteis, monitores, componentes e equipamentos para casa e escritório.</p>
             </article>
             <article class="cartao">
-                <div class="icone" aria-hidden="true">&#128266;</div>
+                <div class="icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 5 6.5 9H3v6h3.5L11 19V5Z"/>
+                        <path d="M15.5 9.2a4 4 0 0 1 0 5.6"/>
+                        <path d="M18.4 6.4a8 8 0 0 1 0 11.2"/>
+                    </svg>
+                </div>
                 <h2>Áudio e casa inteligente</h2>
                 <p>Colunas, auscultadores, câmaras e acessórios para ligar a casa ao dia a dia.</p>
             </article>
             <article class="cartao">
-                <div class="icone" aria-hidden="true">&#128666;</div>
+                <div class="icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6.5h10.5V16H3z"/>
+                        <path d="M13.5 10h3.6L21 13.2V16h-7.5z"/>
+                        <circle cx="7" cy="18" r="1.9"/>
+                        <circle cx="17" cy="18" r="1.9"/>
+                    </svg>
+                </div>
                 <h2>Entrega em Moçambique</h2>
                 <p>Envio para Maputo e províncias, com referência de encomenda para acompanhar o estado.</p>
             </article>

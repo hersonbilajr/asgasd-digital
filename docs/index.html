@@ -161,10 +161,10 @@
 
     .lema span { white-space: nowrap; }
 
-    .lema span + span::before {
+    .lema span:not(:last-child)::after {
         content: "\00b7";
         color: var(--acento);
-        margin-right: .5rem;
+        margin-left: .5rem;
     }
 
     .cartoes {
@@ -305,7 +305,7 @@
     }
 
     @media (max-width: 520px) {
-        .lema { letter-spacing: .08em; font-size: .72rem; }
+        .lema { letter-spacing: .06em; font-size: .68rem; }
     }
 
     @media (min-width: 980px) {

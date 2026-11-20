@@ -38,7 +38,9 @@ server:
 app:
   nome: Asgasd Digital
   moeda: MT
-  base-url: ${APP_BASE_URL:http://localhost:8080}
+  # APP_BASE_URL tem prioridade; no Render cai para o RENDER_EXTERNAL_URL que a plataforma
+  # injecta automaticamente (nao depende do blueprint conhecer a URL antes do primeiro deploy).
+  base-url: ${APP_BASE_URL:${RENDER_EXTERNAL_URL:http://localhost:8080}}
   upload:
     dir: ${UPLOAD_DIR:./uploads}
   envio:

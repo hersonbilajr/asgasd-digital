@@ -184,10 +184,12 @@ O contentor corre como utilizador não-root e expõe `PORT` (predefinido 8080).
 ## 9. Deploy
 
 ### Render (Blueprint)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hersonbilajr/asgasd-digital)
+
 `render.yaml` descreve o serviço web (Docker) e uma base PostgreSQL. O Render injeta `DATABASE_URL` como URI `postgres://…` (`fromDatabase: connectionString`) e a aplicação converte-a para JDBC no arranque — não é preciso montar a URL à mão.
 
 1. Abra `https://render.com/deploy?repo=https://github.com/hersonbilajr/asgasd-digital` (ou **New → Blueprint** e escolha o repositório) e confirme **Apply**.
-2. `APP_BASE_URL` não é fixado no repositório: o Blueprint copia para ela o `RENDER_EXTERNAL_URL` que o Render atribui no primeiro sync. Assim os links de reposição de senha apontam sempre para o subdomínio real (mesmo que o nome `asgasd-digital` já esteja ocupado e o Render acrescente um sufixo) e acompanham renomeações ou domínios próprios. Se algum dia definir `APP_BASE_URL` à mão em **Environment**, esse valor passa a ter prioridade.
+2. `APP_BASE_URL` não aparece no Blueprint de propósito: o subdomínio só existe depois do primeiro sync, e a aplicação usa o `RENDER_EXTERNAL_URL` que o Render injeta automaticamente. Assim os links de reposição de senha apontam sempre para o subdomínio real (mesmo que o nome `asgasd-digital` já esteja ocupado e o Render acrescente um sufixo) e acompanham renomeações ou domínios próprios. Se definir `APP_BASE_URL` à mão em **Environment**, esse valor passa a ter prioridade.
 3. `ADMIN_PASSWORD` e `CLIENTE_PASSWORD` são gerados automaticamente; veja-os em **Environment** e altere-os depois do primeiro login.
 
 > O plano `free` do Render não pede cartão, mas a base de dados gratuita expira 30 dias após a criação (o serviço web gratuito adormece após 15 minutos sem tráfego e demora ~1 minuto a acordar). Para manter os dados indefinidamente, mude a base para `0.1c-256mb` (6 USD/mês) antes do fim desse prazo — o conteúdo é preservado — ou use o Neon abaixo. O PostgreSQL é fixado na versão 16 porque o Flyway do Spring Boot 3.3 ainda não reconhece a 18.

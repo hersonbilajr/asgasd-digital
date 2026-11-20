@@ -13,13 +13,10 @@ services:
         fromDatabase:
           name: asgasd-db
           property: connectionString
-      # O Render so atribui o subdominio no primeiro sync, por isso nunca se fixa a URL:
-      # APP_BASE_URL recebe o RENDER_EXTERNAL_URL real (segue renomeacoes e dominios proprios).
-      - key: APP_BASE_URL
-        fromService:
-          name: asgasd-digital
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
+      # APP_BASE_URL nao e definido aqui de proposito: o subdominio so existe depois do primeiro
+      # sync e um valor fixo faria o blueprint falhar. A aplicacao usa o RENDER_EXTERNAL_URL que
+      # o Render injecta em qualquer web service, por isso os links de reposicao de senha seguem
+      # o subdominio real, renomeacoes e dominios proprios sem tocar no blueprint.
       - key: SEED_DEMO
         value: "true"
       - key: ADMIN_EMAIL

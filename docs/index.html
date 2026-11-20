@@ -146,16 +146,26 @@
     }
 
     .lema {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: .5rem;
+        row-gap: .3rem;
         margin: 24px 0 0;
-        text-wrap: balance;
         font-size: .76rem;
         font-weight: 600;
-        letter-spacing: .18em;
+        letter-spacing: .16em;
         text-transform: uppercase;
         color: #8fb6d6;
     }
 
-    .lema span { color: var(--acento); }
+    .lema span { white-space: nowrap; }
+
+    .lema span + span::before {
+        content: "\00b7";
+        color: var(--acento);
+        margin-right: .5rem;
+    }
 
     .cartoes {
         display: grid;
@@ -343,7 +353,7 @@
                     online. Até lá, a equipa continua a atender pedidos, assistência e serviços de design
                     por telefone e Instagram.
                 </p>
-                <p class="lema">Tecnologia <span>&middot;</span> Inovação <span>&middot;</span> Soluções digitais</p>
+                <p class="lema"><span>Tecnologia</span><span>Inovação</span><span>Soluções digitais</span></p>
             </div>
             <img class="hero-ilustracao" src="assets/hero.svg" alt="" width="520" height="420" aria-hidden="true">
         </div>
